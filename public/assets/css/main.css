@@ -1,0 +1,17 @@
+body{
+    margin: 0;
+    font-family: "Arial", "SansSerif";
+}
+h1
+{
+    margin: 0;
+}
+section
+{
+    float: left;
+    margin: 10px;
+}
+input
+{
+    display: block;
+}

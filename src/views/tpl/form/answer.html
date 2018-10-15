@@ -1,0 +1,236 @@
+<h1>Visualizar Respostas individuais</h1>
+<h2>{$form->getName()}</h2>
+<h3>Resposta numero <span id="answer-number"></span></h3>
+
+<div>
+
+    <div id="questions">
+
+        {loop="$questions"}
+        <div class="question" data-type="{$value->getType()}">
+            <div class="question-title">
+                <p>{$value->getIndex() + 1}.</p>
+                <p>{$value->getStatement()} {$value->getRequired() ? "(obrigatória)" : "" }</p>
+            </div>
+            <div class="answer">
+
+                {if="$value->getType() == 'text'"}
+                    <textarea placeholder="Resposta" disabled></textarea>
+                {else}
+
+                    {$questionID=$value->getID()}
+                    {$type=$value->getType()}
+
+                    {loop="$value->getOptions()"}
+
+                        <div class="option" data-id="{$value->getID()}" data-describe="{$value->getDescribeAllowed()}">
+                            <input type="{$type}" id="option-{$value->getID()}" name="question-{$questionID}" disabled>
+                            <label for="option-{$value->getID()}">{$value->getInfo()}</label>
+                            {if="$value->getDescribeAllowed()"}
+                                <input type="text" size="64" maxlength="256" placeholder="Descreva..." disabled>
+                            {/if}
+                        </div>
+
+                    {/loop}
+
+                {/if}
+
+            </div>
+        </div>
+        {/loop}
+
+    </div>
+
+    <form action="javascript: search();">
+
+        <span>Ir Para a resposta</span>
+        <input type="number" id="answer-search" data-form-id="{$form->getID()}">
+        <input type="submit" value="Pesquisar">
+        <input type="button" id="next-answer" value="Proxima questão">
+
+    </form>
+
+</div>
+
+<script>
+
+    function next_anwer()
+    {
+
+        $("#answer-search").val(parseInt(last_answer) + 1);
+        search();
+
+    }
+
+    function search(){
+
+        clear_questions();
+
+        let formID = $("#answer-search").attr("data-form-id");
+        let answerIndex = $("#answer-search").val();
+
+        if(answerIndex !== ""){
+
+            $.get("/formulario/" + formID +"/resposta/" + answerIndex, {}, function(data){
+                show_response(data, false);
+                data = JSON.parse(data);
+                if(data["code"] === undefined)
+                {
+
+                    last_answer = answerIndex;
+                    $("#answer-number").text(answerIndex);
+                    clear_questions();
+
+                    let questions = $(".question");
+
+                    if(data.length !== 0){
+                        $("#result").html("");
+                        for(var i = 0; i < data.length; i++)
+                        {
+
+                            let answer = data[i];
+                            let question = $(questions[i]);
+                            if(answer != []){
+
+                                if(question.attr("data-type") === "text") question.find(".answer textarea").val(answer["answer"]);
+                                else{
+
+                                    let options = question.find(".option");
+                                    for(var j = 0; j < options.length; j++)
+                                    {
+
+                                        let option = $(options[j]);
+
+                                        for(var k = 0; k < answer["answer"].length; k++) {
+
+                                            let answerK = answer["answer"][k];
+
+                                            if(parseInt(option.attr("data-id")) === parseInt(answerK["id"])){
+
+                                                option.find("input").prop("checked", true);
+                                                if (option.attr("data-describe") === "1") option.find("input")[1].value = answerK["describe_text"];
+
+                                            }
+
+                                        }
+
+                                    }
+
+
+                                }
+
+                            }
+
+                        }
+                    }else{
+                        $("#result").html("Indice não encontrado!");
+                    }
+
+                }
+            })
+
+        }
+
+    }
+
+    function clear_questions()
+    {
+
+        let questions = $(".question");
+        for(var i = 0; i < questions.length; i++)
+        {
+
+            let question = $(questions[i]);
+            if(question.attr("data-type") === "text") question.find(".answer textarea").val("");
+            else{
+
+                let options = question.find(".option");
+                for(var j = 0; j < options.length; j++)
+                {
+
+
+                    let option = $(options[j]);
+
+                    option.find("input").prop("checked", false);
+                    if(option.attr("data-describe") === "1") option.find("input")[1].value = "";
+
+                }
+
+            }
+
+        }
+
+    }
+
+    function main(){
+
+        last_answer = 0;
+        $("#next-answer").on("click", next_anwer);
+        next_anwer();
+
+    }
+
+    window.onload = main;
+
+    codes = {
+        "200" : "Problema com o banco de dados, tente novamente mais tarde!"
+    };
+
+
+</script>
+
+<style>
+
+    *{
+        box-sizing: border-box;
+    }
+    .question{
+        float: left;
+        width: 100%;
+        background-color: rgb(245,245,245);
+        padding: 10px;
+    }
+    .question::after
+    {
+        content: '';
+        display: table;
+        clear: both;
+    }
+    .question-title p
+    {
+        margin: 0;
+        display: inline-block;
+        padding: 10px;
+        background-color: rgb(250,250,250);
+        border: 1px solid rgba(0,0,0,0.3);
+    }
+    .answer
+    {
+        background-color: rgb(245,245,245);
+    }
+    .answer textarea
+    {
+
+        padding: 10px;
+        width: 100%;
+        height: 5rem;
+
+    }
+    .option{
+        padding: 10px;
+        /*display: inline-block;*/
+    }
+
+    .option input, .option label
+    {
+        display: inline-block;
+    }
+
+    form{
+        float: right;
+    }
+    form input{
+        display: inline-block;
+    }
+
+</style>

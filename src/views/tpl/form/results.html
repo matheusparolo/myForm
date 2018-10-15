@@ -1,0 +1,41 @@
+<h1>Resultados</h1>
+<h2>Total de respostas</h2>
+<table>
+
+    <thead>
+
+        <tr>
+            <td>Indice da questão</td>
+            <td>Enunciado</td>
+            <td>Rotulo da Opção</td>
+            <td>Porcentagem de votos</td>
+            <td>Total de votos</td>
+        </tr>
+
+    </thead>
+    <tbody>
+
+        {loop="$results['answers']"}
+
+            <tr>
+
+                <td>{$value["index"]}</td>
+                <td>{$value["statement"]}</td>
+                <td>{$value["info"]}</td>
+                <td>{$value["percent"]}%</td>
+                <td>{$value["votes"]}</td>
+
+            </tr>
+
+        {/loop}
+
+    </tbody>
+
+</table>
+
+
+<style>
+
+
+
+</style>
