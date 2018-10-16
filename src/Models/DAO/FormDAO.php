@@ -37,6 +37,49 @@ class FormDAO{
 
     }
 
+    public function update(int $formID, string $name, array $questions):void
+    {
+
+        $this->conn->begin_transaction();
+
+        $this->conn->query("update myForm.form set name = :name where id = :id",[
+            "id" => $formID,
+            "name" => $name
+        ]);
+
+
+        foreach($questions as $question)
+        {
+
+            $this->conn->query("update myForm.question set `index` = :index, required = :required, statement = :statement where id = :id",[
+                "id" => $question["id"],
+                "index" => $question["index"],
+                "required" => $question["required"] == "true" ? 1 : 0,
+                "statement" => $question["statement"]
+            ]);
+
+            if($question["options"])
+            {
+
+                foreach($question["options"] as $option)
+                {
+
+                    $this->conn->query("update myForm.boxOption set info = :info, describe_allowed = :describeAllowed where id = :id",[
+                        "id" => $option["id"],
+                        "info" => $option["info"],
+                        "describeAllowed" => $option["describe_allowed"] == "true" ? 1 : 0
+                    ]);
+
+                }
+
+            }
+
+        }
+
+        $this->conn->commit();
+
+    }
+
     public function delete(int $id):void
     {
 
@@ -48,7 +91,7 @@ class FormDAO{
     public function get_results(int $id):array
     {
 
-        $cInterviewee =  $this->conn->query("select count(interviewee.id) as c_interviewee from myForm.interviewee where form_id = :id",[
+        $cInterviewee =  $this->conn->select("select count(interviewee.id) as c_interviewee from myForm.interviewee where form_id = :id",[
             "id" => $id
         ])[0]["c_interviewee"];
 
@@ -60,7 +103,7 @@ class FormDAO{
         if($cInterviewee > 0)
         {
 
-            $return["answers"] = $this->conn->query(
+            $return["answers"] = $this->conn->select(
                 "select `index`, statement, question_id, info, count(boxOption_id) as votes, round(((count(boxOption_id) * 100) / :cInterviewee), 2) as percent
                     from myForm.interviewee 
                     inner join myForm.boxAnswer on interviewee.id = boxAnswer.interviewee_id
@@ -84,7 +127,7 @@ class FormDAO{
     public function find_by_id(int $id, array $columns = ["*"]):GenericEntity
     {
 
-        $data = $this->conn->query("select " . join(",", $columns) . " from form where id = :id",
+        $data = $this->conn->select("select " . join(",", $columns) . " from form where id = :id",
             [
                 "id" => $id
             ]);
@@ -96,7 +139,7 @@ class FormDAO{
     public function find_all_by_research_id(int $researchID):array
     {
 
-        $data = $this->conn->query(
+        $data = $this->conn->select(
             "select id, name from myForm.form where research_id = :researchID",
             [
                 "researchID" => $researchID
@@ -114,10 +157,10 @@ class FormDAO{
 
     }
 
-    public function find_questions(int $id):array
+    public function find_questions(int $id, bool $returnJSON = false):array
     {
 
-        $questions = $this->conn->query(
+        $questions = $this->conn->select(
             "select id, `index`, statement, required, type from myForm.question where form_id= :id order by `index`",
             [
                 "id" => $id
@@ -130,7 +173,7 @@ class FormDAO{
         foreach($questions as $question)
         {
 
-            array_push($return, new GenericEntity($question));
+            array_push($return, ($returnJSON ? $question : new GenericEntity($question)));
             if($question["type"] != "text")
             {
 
@@ -138,17 +181,16 @@ class FormDAO{
                     "questionID" => $question["id"]
                 ]);
 
-                $options = $this->conn->execute();
+                $this->conn->execute();
+                $options = $this->conn->fetch_all();
 
-                $temp = [];
-                foreach($options as $option)
-                {
-
-                    array_push($temp, new GenericEntity($option));
-
+                if($returnJSON)
+                    $return[$i]["options"] = $options;
+                else{
+                    $temp = [];
+                    foreach($options as $option) array_push($temp, new GenericEntity($option));
+                    $return[$i]->setOptions($temp);
                 }
-
-                $return[$i]->setOptions($temp);
 
             }
             $i++;
@@ -161,15 +203,14 @@ class FormDAO{
     public function find_answer_by_index(int $id, int $index):array
     {
 
-        $interviewee = $this->conn->query("select id from myForm.interviewee where form_id = :id limit :index,1", [
-            "id" => $id,
-            "index" => $index - 1
+        $interviewee = $this->conn->select("select id from myForm.interviewee where form_id = :id limit " . ($index - 1) . ",1", [
+            "id" => $id
         ]);
 
         if(!empty($interviewee)){
 
             $interviewee = $interviewee[0];
-            $questions = $this->conn->query("select id, statement, type from myForm.question where form_id = :id order by `index`;", [
+            $questions = $this->conn->select("select id, statement, type from myForm.question where form_id = :id order by `index`;", [
                 "id" => $id
             ]);
 
@@ -180,7 +221,7 @@ class FormDAO{
                 if($question["type"] == "text")
                 {
 
-                    $answer = $this->conn->query("select answer from myForm.textAnswer where question_id = :questionID and interviewee_id = :intervieweeID", [
+                    $answer = $this->conn->select("select answer from myForm.textAnswer where question_id = :questionID and interviewee_id = :intervieweeID", [
                         "questionID" => $question["id"],
                         "intervieweeID" => $interviewee["id"]
                     ]);
@@ -188,7 +229,7 @@ class FormDAO{
 
                 }else{
 
-                    $answer = $this->conn->query("select boxOption_id as id, describe_text from myForm.boxOption inner join myForm.boxAnswer where question_id = :questionID and boxOption.id = boxAnswer.boxOption_id and interviewee_id = :intervieweeID", [
+                    $answer = $this->conn->select("select boxOption_id as id, describe_text from myForm.boxOption inner join myForm.boxAnswer where question_id = :questionID and boxOption.id = boxAnswer.boxOption_id and interviewee_id = :intervieweeID", [
                         "questionID" => $question["id"],
                         "intervieweeID" => $interviewee["id"]
                     ]);

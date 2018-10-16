@@ -29,6 +29,14 @@ class FormModel{
 
     }
 
+    public function update(int $formID, string $name, array $questions):void
+    {
+
+        $this->formDAO->update($formID, $name, $questions);
+        App::action_response("000");
+
+    }
+
     public function delete(int $id):void
     {
 
@@ -64,11 +72,11 @@ class FormModel{
 
     }
 
-    public static function find_questions(int $id):array
+    public static function find_questions(int $id, bool $returnJSON = false):array
     {
 
         $formDAO = new FormDAO();
-        return $formDAO->find_questions($id);
+        return $formDAO->find_questions($id, $returnJSON);
 
     }
 

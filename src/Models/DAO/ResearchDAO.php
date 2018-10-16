@@ -70,7 +70,7 @@ class ResearchDAO{
     public function find_by_id(int $id, array $columns = ["*"]):GenericEntity
     {
 
-        $data = $this->conn->query("select " . join(",", $columns) . " from research where id = :id",
+        $data = $this->conn->select("select " . join(",", $columns) . " from research where id = :id",
             [
                 "id" => $id
             ]);
@@ -82,7 +82,7 @@ class ResearchDAO{
     public function find_all_by_user_id(int $userID):array
     {
 
-        $researches = $this->conn->query(
+        $researches = $this->conn->select(
             "select research.id, research.creator_id, research.name, user.name as creator_name
              from myForm.researchers
              inner join myForm.research on research.id = researchers.research_id
@@ -116,7 +116,7 @@ class ResearchDAO{
     public function find_members(int $researchID, int $userID):array
     {
 
-        $users = $this->conn->query(
+        $users = $this->conn->select(
             "select user.id, user.name, user.email from myForm.researchers 
             inner join myForm.user on user_id = user.id
             where research_id = :id and user_id != :userID;",
@@ -140,7 +140,7 @@ class ResearchDAO{
     public function isMember(int $researchID, int $userID):bool
     {
 
-        $data = $this->conn->query("select '' from myForm.researchers where research_id = :researchID and user_id = :userID",
+        $data = $this->conn->select("select '' from myForm.researchers where research_id = :researchID and user_id = :userID",
             [
                 "researchID" => $researchID,
                 "userID" => $userID

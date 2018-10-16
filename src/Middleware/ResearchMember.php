@@ -35,7 +35,7 @@ class ResearchMember
             $getId = $entity->isEmpty() ? false : $entity->getResearchID();
         }
 
-        $isMember = $getId ? ResearchModel::isMember($getId, $_SESSION[UserModel::SESSION]) : false;
+        $isMember = $getId ? ResearchModel::isMember((int)$getId, $_SESSION[UserModel::SESSION]) : false;
 
         if(!$isMember){
 

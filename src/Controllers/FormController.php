@@ -36,6 +36,35 @@ class FormController
     }
 
 
+    public function getUpdate($req, $res, $args):void
+    {
+
+        new PageMaker("form", ["update" => ["formID" => $args["id"]]]);
+
+    }
+
+    public function postUpdate():void
+    {
+
+        $form = new FormModel();
+        $form->update($_POST["id"], $_POST["name"], $_POST["questions"]);
+
+    }
+
+
+    public function getFormJSON($req, $res, $args){
+
+        $form = FormModel::find_by_id($args["id"], ["name"]);
+        $questions = FormModel::find_questions($args["id"], true);
+        $data = [
+            "name" => $form->getName(),
+            "questions" => $questions
+        ];
+        echo json_encode($data);
+
+    }
+
+
     public function postDelete():void
     {
 
@@ -66,7 +95,7 @@ class FormController
 
     }
 
-    public function getAnswerIndex($req, $res, $args)
+    public function getAnswerByIndex($req, $res, $args)
     {
 
         $answers = FormModel::find_answer_by_index($args["id"], $args["answerIndex"]);

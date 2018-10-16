@@ -1,0 +1,343 @@
+<h1>Atualizar Formulario</h1>
+
+
+<form action="javascript: update();">
+
+    <div class="row">
+
+        <input type="hidden" id="formID" value="{$formID}">
+        <input type="text" id="name" maxlength="256" placeholder="Nome do Formulario" required>
+
+    </div>
+
+    <div>
+
+        <h2>Questões</h2>
+
+        <div id="questions"></div>
+
+    </div>
+
+    <input type="submit" value="Atualizar">
+
+</form>
+
+<script>
+
+    function update(){
+
+        $.post("/formulario/editar", {
+            "id" : $("#formID").val(),
+            "name" : $("#name").val(),
+            "questions" : questions
+        }, function(data){
+            show_response(data);
+        })
+
+    }
+
+
+    function search_index(element, attr){
+
+        while($(element).attr(attr) === undefined) element = element.parentNode;
+        return $(element).attr(attr);
+
+    }
+
+    function change_index(){
+
+        let index = search_index(this, "data-index");
+        let newIndex = $(this).val() - 1;
+
+        if (newIndex === "") $(this).val(index + 1);
+        else if(index !== newIndex) {
+
+            let question, type, options, temp;
+
+            questions.splice(newIndex, 0, questions.splice(index, 1)[0]);
+            temp = questions;
+            questions = [];
+
+            $("#questions").html("");
+            for (var i = 0; i < temp.length; i++) {
+
+                question = temp[i];
+                type = question["type"];
+                options = type !== "text" ? question["options"] : null;
+
+                push_question(question["id"], type, question["statement"], question["required"], options);
+
+            }
+
+        }
+
+    }
+    function change_statement(){
+
+        let index = search_index(this, "data-index");
+        questions[index]["statement"] = $(this).prop("value");
+
+    }
+    function change_option_info(){
+
+        let index = search_index(this, "data-index");
+        let optionIndex = search_index(this, "data-option-index");
+        questions[index]["options"][optionIndex]["info"] = $(this).val();
+
+    }
+
+
+    function change_required(){
+
+        let index = search_index(this, "data-index");
+        questions[index]["required"] = $(this).prop("checked");
+
+    }
+    function change_describe_allowed(){
+
+        let index = search_index(this, "data-index");
+        let optionIndex = search_index(this, "data-option-index");
+        questions[index]["options"][optionIndex]["describe_allowed"] = $(this).prop("checked");
+
+    }
+
+
+    function push_question(id, type, statement = "", required = false, options = []){
+
+        let typeText, index;
+
+        index = questions.length;
+
+        questions.push(
+            {
+                "id" : id,
+                "index" : index,
+                "statement" : statement,
+                "required" : required,
+                "type" : type,
+                "options" : options
+            }
+        );
+
+        if(type === "text") typeText = "Tipo: Texto";
+        else if(type === "checkbox") typeText = "Tipo: Multiplas Opções";
+        else typeText = "Tipo: Unica Opção";
+
+        insert_question(type, index, statement, required, typeText);
+
+        if(type !== "text"){
+
+            let question = $(".question")[index];
+            let option;
+            for(var optionIndex = 0; optionIndex < options.length; optionIndex++)
+            {
+
+                option = options[optionIndex];
+                insert_option(question, index, optionIndex, option["info"], option["describe_allowed"] === "1");
+
+            }
+        }
+
+    }
+    function push_option(question, questionIndex, info = "", describe_allowed = false){
+
+        let optionIndex = questions[questionIndex]["options"].length;
+        questions[questionIndex]["options"].push({
+            "info" : info,
+            "describe_allowed" : describe_allowed
+        });
+        insert_option(question, questionIndex, optionIndex, info, describe_allowed);
+
+    }
+
+
+    function insert_question(type, index, statement, required, typeText){
+
+        let hide_options = type !== "text";
+
+        $("#questions").append(
+            $("<div>")
+                .addClass("question")
+                .attr("data-index", index)
+                .append(
+                    $("<div>")
+                        .addClass("question-title")
+                        .append(
+                            $("<div>")
+                                .addClass("title-left")
+                                .append(
+                                    $("<input>")
+                                        .addClass("index-question")
+                                        .attr("type", "number")
+                                        .prop("value", index + 1)
+                                        .prop("required", true)
+                                        .on("blur", change_index)
+                                )
+                                .append(
+                                    $("<input>")
+                                        .attr("type", "text")
+                                        .attr("size", "64")
+                                        .attr("maxlength", "256")
+                                        .attr("placeholder", "Enunciado da Questão")
+                                        .prop("required", true)
+                                        .prop("value", statement)
+                                        .on("blur", change_statement)
+                                )
+                        )
+                        .append(
+                            $("<div>")
+                                .addClass("title-right")
+                                .append(
+                                    $("<p>")
+                                        .text(typeText)
+                                )
+                                .append(
+                                    $("<p>")
+                                        .addClass("title-actions")
+                                        .append(
+                                            $("<input>")
+                                                .attr("type", "checkbox")
+                                                .prop("checked", required)
+                                                .on("change", change_required)
+                                        )
+                                        .append(
+                                            $("<span>")
+                                                .text("Obrigatória")
+                                        )
+                                )
+
+                        )
+                )
+                .append(
+                    $("<div>")
+                        .css("display", hide_options ? "block" : "none")
+                        .addClass("options")
+                )
+
+        );
+
+    }
+    function insert_option(question, questionIndex, optionIndex, info, describe_allowed){
+
+        $(question).find(".options").append(
+            $("<div>")
+                .addClass("option")
+                .attr("data-option-index", optionIndex)
+                .append(
+                    $("<div>")
+                        .addClass("option-actions")
+                        .append(
+                            $("<input>")
+                                .attr("type", "checkbox")
+                                .prop("checked", describe_allowed)
+                                .on("change", change_describe_allowed)
+                        )
+                        .append(
+                            $("<span>")
+                                .text("Deve descrever")
+                        )
+                )
+                .append(
+                    $("<div>")
+                        .addClass("option-name")
+                        .append(
+                            $("<input>")
+                                .attr("type", "text")
+                                .attr("maxlength", "256")
+                                .attr("placeholder", "Nome da Opção")
+                                .prop("required", true)
+                                .on("blur", change_option_info)
+                                .val(info)
+                        )
+                )
+        )
+
+    }
+
+
+    function main(){
+
+        codes = {
+            "000" : "/pesquisa/" + $("#researchID").val(),
+            "200" : "Problema com o banco de dados, tente novamente mais tarde!"
+        };
+
+        questions = [];
+        $.get("/formulario/" + $("#formID").val() + "/json", function(data){
+
+            $("#name").val(data["name"]);
+
+            for(var i = 0; i < data["questions"].length; i++){
+
+                let question = data["questions"][i];
+                push_question(question["id"], question["type"], question["statement"], question["required"] === "1", question["options"]);
+
+            }
+
+        }, "json");
+
+    }
+
+    window.onload = main;
+
+</script>
+
+<style>
+    p{
+        margin: 0;
+    }
+
+    #questions
+    {
+        padding: 10px;
+    }
+
+    .title-left, .title-right
+    {
+        float: left;
+    }
+
+    .title-left input{
+        display: inline-block;
+    }
+
+    .title-actions input, .title-actions span
+    {
+        display: inline-block;
+    }
+
+    #add-questions input
+    {
+        display: inline-block;
+    }
+
+    .question-title, .options
+    {
+        float: left;
+        width: 100%;
+    }
+
+    .options input[type="checkbox"], .options span
+    {
+        display: inline-block;
+    }
+    .option
+    {
+        border: 1px solid black;
+        padding: 10px 0;
+    }
+    .option::after
+    {
+        content: '';
+        display: table;
+        clear: both;
+    }
+    .option div
+    {
+        float: left;
+    }
+    input[type=number]
+    {
+        width: 2.5rem;
+    }
+</style>

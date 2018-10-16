@@ -67,13 +67,12 @@ class Connector{
 
     }
 
-    public function execute():array
+    public function execute():void
     {
 
         try {
 
             $this->stmt->execute();
-            return $this->stmt->fetchAll();
 
         }
         catch(\PDOException $e){
@@ -84,13 +83,38 @@ class Connector{
 
     }
 
+    public function fetch_all():array
+    {
 
-    public function query(string $query, array $params = []):array
+        try{
+
+            return $this->stmt->fetchAll();
+
+        }
+        catch(\PDOException $e){
+
+            $this->casePDOException($e);
+
+        }
+
+
+    }
+
+
+    public function query(string $query, array $params = []):void
     {
 
         $this->prepare($query);
         $this->bind($params);
-        return $this->execute();
+        $this->execute();
+
+    }
+
+    public function select(string $query, array $params = []):array
+    {
+
+        $this->query($query, $params);
+        return $this->fetch_all();
 
     }
 
