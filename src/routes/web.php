@@ -83,11 +83,11 @@ $this->group('/formulario', function (){
             $this->get("/json", "\TCC\Controllers\FormController:getFormJSON");
 
             $this->get("/editar", "\TCC\Controllers\FormController:getUpdate");
-            $this->get("/resposta", "\TCC\Controllers\FormController:getAnswer");
-            $this->get("/resposta/enviar", "\TCC\Controllers\FormController:getAddAnswer");
-            $this->get("/resposta/{answerIndex}", "\TCC\Controllers\FormController:getAnswerByIndex");
+            $this->get("/resposta", "\TCC\Controllers\AnswerController:getAnswer");
+            $this->get("/resposta/enviar", "\TCC\Controllers\AnswerController:getAddAnswer");
+            $this->get("/resposta/{answerIndex}", "\TCC\Controllers\AnswerController:getAnswerByIndex");
 
-            $this->get("/resultados", "\TCC\Controllers\FormController:getResults");
+            $this->get("/resultados", "\TCC\Controllers\AnswerController:getResults");
 
         });
 

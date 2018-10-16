@@ -50,7 +50,7 @@ class ResearchModel{
     }
 
 
-    public static function find_by_id(int $id, $columns = ["*"]):GenericEntity
+    public static function find_by_id(int $id, array $columns = ["*"]):GenericEntity
     {
 
         $researchDAO = new ResearchDAO();

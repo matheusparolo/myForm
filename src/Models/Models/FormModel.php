@@ -64,7 +64,7 @@ class FormModel{
     }
 
 
-    public static function find_by_id(int $id, $columns = ["*"]):GenericEntity
+    public static function find_by_id(int $id, array $columns = ["*"]):GenericEntity
     {
 
         $formDAO = new FormDAO();

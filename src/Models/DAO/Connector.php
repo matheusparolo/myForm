@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Matheus Parolo Miranda
+ @author Matheus Parolo Miranda
  */
 
 namespace TCC\Models\DAO;
@@ -119,7 +119,7 @@ class Connector{
     }
 
 
-    public function last_insert_id():string
+    public function last_insert_id():int
     {
 
         try{
@@ -160,7 +160,7 @@ class Connector{
 
     }
 
-    public function casePDOException(\PDOException $e):void
+    private function casePDOException(\PDOException $e):void
     {
 
         if($this->inTransaction){
@@ -174,5 +174,6 @@ class Connector{
         else App::action_response("200");
 
     }
+
 
 }
