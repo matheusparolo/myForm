@@ -48,7 +48,7 @@ class FormDAO{
     public function get_results(int $id):array
     {
 
-        $cInterviewee =  $this->conn->query("select count(interviewee.id) from myForm.interviewee where form_id = :id",[
+        $cInterviewee =  $this->conn->query("select count(interviewee.id) as c_interviewee from myForm.interviewee where form_id = :id",[
             "id" => $id
         ])[0]["c_interviewee"];
 
@@ -61,10 +61,11 @@ class FormDAO{
         {
 
             $return["answers"] = $this->conn->query(
-                "select question_id, info, count(boxOption_id) as votes, round(((count(boxOption_id) * 100) / :cInterviewee), 2) as percent
+                "select `index`, statement, question_id, info, count(boxOption_id) as votes, round(((count(boxOption_id) * 100) / :cInterviewee), 2) as percent
                     from myForm.interviewee 
                     inner join myForm.boxAnswer on interviewee.id = boxAnswer.interviewee_id
                     inner join boxOption on boxOption.id = boxOption_id
+                    inner join question on question.id = boxOption.question_id
                     where interviewee.form_id = :id
                     group by boxOption_id",
             [
@@ -73,6 +74,7 @@ class FormDAO{
             ]);
 
         }
+
 
         return $return;
 
