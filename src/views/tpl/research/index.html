@@ -4,6 +4,7 @@
 <a href="/sair">Sair</a>
 
 <div>
+
     {loop="$researches"}
 
         {$id = $value["researchEntity"]->getId()}
@@ -17,18 +18,19 @@
             </div>
 
             <div class="research-actions">
+
                 <a href="/pesquisa/{$id}">Visualizar</a>
             {if="$userID == $creatorID"}
-
-                    <a href="/pesquisa/{$id}/editar">Editar</a>
-                    <a onclick="delete_research({$id})" >Deletar</a>
-
+                <a href="/pesquisa/{$id}/editar">Editar</a>
+                <a onclick="delete_research({$id})" >Deletar</a>
             {/if}
+
             </div>
 
         </div>
 
     {/loop}
+
 </div>
 
 <script>

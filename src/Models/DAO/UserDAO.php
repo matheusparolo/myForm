@@ -19,24 +19,37 @@ class UserDAO{
     }
 
 
-    public function create(array $data):void
+    public function create(string $name, string $email, string $password):int
     {
 
-        $this->conn->query("insert into tcc.user(email, name, password) values(:email, :name, :password)", $data);
+        $this->conn->query("insert into myForm.user(name, email, password) values(:name, :email, :password)",[
+            "name" => $name,
+            "email" => $email,
+            "password" => $password
+        ]);
+
+        return $this->conn->last_insert_id();
 
     }
 
-    public function update(array $data):void
+    public function update(int $id, string $name, string $email):void
     {
 
-        $this->conn->query("update tcc.user set email = :email, name = :name where id = :id", $data);
+        $this->conn->query("update myForm.user set name = :name, email = :email where id = :id", [
+            "id" => $id,
+            "name" => $name,
+            "email" => $email
+        ]);
 
     }
 
-    public function update_pass(int $userID, String $pass):void
+    public function update_password(int $id, String $password):void
     {
 
-        $this->conn->query("update tcc.user set password = :password where id = :id", ["password" => $pass, "id" => $userID]);
+        $this->conn->query("update myForm.user set password = :password where id = :id", [
+            "id" => $id,
+            "password" => $password
+        ]);
 
     }
 
@@ -44,7 +57,7 @@ class UserDAO{
     public function find_by_id(int $id, array $columns = ["*"]):GenericEntity
     {
 
-        $data = $this->conn->query("select " . join(",", $columns) . " from user where id = :id",
+        $data = $this->conn->query("select " . join(",", $columns) . " from myForm.user where id = :id",
             [
                 "id" => $id
             ]);
@@ -56,7 +69,7 @@ class UserDAO{
     public function find_by_email(String $email, array $columns = ["*"]):GenericEntity
     {
 
-        $data = $this->conn->query("select " . join(",", $columns) . " from user where email = :email",
+        $data = $this->conn->query("select " . join(",", $columns) . " from myForm.user where email = :email",
             [
                 "email" => $email
             ]);
@@ -68,11 +81,10 @@ class UserDAO{
     public function find_all_by_name_like(int $id, string $name):array
     {
 
-        return $this->conn->query("select id, name, email from tcc.user where name like CONCAT('%',:name,'%') and id != :id",
-            [
-                "id" => $id,
-                "name" => $name
-            ]);
+        return $this->conn->query("select id, name, email from myForm.user where name like CONCAT('%',:name,'%') and id != :id", [
+            "id" => $id,
+            "name" => $name
+        ]);
 
     }
 

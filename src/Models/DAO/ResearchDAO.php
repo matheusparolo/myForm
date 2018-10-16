@@ -24,7 +24,7 @@ class ResearchDAO{
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("INSERT INTO tcc.research(creator_id, name) values(:userID, :name)", [
+        $this->conn->query("insert into myForm.research(creator_id, name) values(:userID, :name)", [
             "userID" => $userID,
             "name" => $name
         ]);
@@ -37,23 +37,23 @@ class ResearchDAO{
 
     }
 
-    public function update(int $researchID, string $name, array $members):void
+    public function update(int $researchID, string $name, array $users):void
     {
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("update tcc.research set name = :name where id = :researchID",
+        $this->conn->query("update myForm.research set name = :name where id = :researchID",
             [
                 "name" => $name,
                 "researchID" => $researchID
             ]);
 
-        $this->conn->query("delete from tcc.researchers where research_id = :researchID",
+        $this->conn->query("delete from myForm.researchers where research_id = :researchID",
             [
                 "researchID" => $researchID
             ]);
 
-        $this->add_members($researchID, $members);
+        $this->add_members($researchID, $users);
 
         $this->conn->commit();
 
@@ -62,7 +62,7 @@ class ResearchDAO{
     public function delete(int $id):void
     {
 
-        $this->conn->query("delete from tcc.research where id = :id", ["id" => $id]);
+        $this->conn->query("delete from myForm.research where id = :id", ["id" => $id]);
 
     }
 
@@ -82,17 +82,18 @@ class ResearchDAO{
     public function find_all_by_user_id(int $userID):array
     {
 
-        $data = $this->conn->query(
-            "select tcc.research.id, tcc.research.creator_id, tcc.user.name as creator_name, tcc.research.name
-             from tcc.researchers
-             inner join tcc.research on researchers.user_id = :userID and research.id = researchers.research_id
-             inner join tcc.user on user.id = research.creator_id;",
+        $researches = $this->conn->query(
+            "select research.id, research.creator_id, research.name, user.name as creator_name
+             from myForm.researchers
+             inner join myForm.research on research.id = researchers.research_id
+             inner join myForm.user on user.id = research.creator_id
+             where researchers.user_id = :userID;",
             [
                 "userID" => $userID
             ]);
 
         $return = [];
-        foreach($data as $line)
+        foreach($researches as $line)
         {
 
             $research = new GenericEntity([
@@ -112,14 +113,15 @@ class ResearchDAO{
 
     }
 
-    public function find_members(int $id, int $userID):array
+    public function find_members(int $researchID, int $userID):array
     {
 
         $users = $this->conn->query(
-            "select user.id, user.name, user.email from tcc.researchers 
-            inner join tcc.user where research_id = :id and user_id = user.id and user_id != :userID;",
+            "select user.id, user.name, user.email from myForm.researchers 
+            inner join myForm.user on user_id = user.id
+            where research_id = :id and user_id != :userID;",
             [
-                "id" => $id,
+                "id" => $researchID,
                 "userID" => $userID
             ]);
 
@@ -138,7 +140,7 @@ class ResearchDAO{
     public function isMember(int $researchID, int $userID):bool
     {
 
-        $data = $this->conn->query("select '' from tcc.researchers where research_id = :researchID and user_id = :userID",
+        $data = $this->conn->query("select '' from myForm.researchers where research_id = :researchID and user_id = :userID",
             [
                 "researchID" => $researchID,
                 "userID" => $userID
@@ -149,15 +151,15 @@ class ResearchDAO{
     }
 
 
-    private function add_members(int $researchID, array $members):void
+    private function add_members(int $researchID, array $users):void
     {
 
-        $this->conn->prepare("INSERT INTO tcc.researchers (user_id, research_id) values(:memberID, '$researchID')");
-        foreach($members as $memberID)
+        $this->conn->prepare("insert into myForm.researchers (user_id, research_id) values(:userID, '$researchID')");
+        foreach($users as $userID)
         {
 
             $this->conn->bind([
-                "memberID" => $memberID
+                "userID" => $userID
             ]);
 
             $this->conn->execute();

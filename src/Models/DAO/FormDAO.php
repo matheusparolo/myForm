@@ -24,7 +24,7 @@ class FormDAO{
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("INSERT INTO tcc.form(research_id, name) values(:researchID, :name)", [
+        $this->conn->query("INSERT INTO myForm.form(research_id, name) values(:researchID, :name)", [
             "researchID" => $researchID,
             "name" => $name
         ]);
@@ -40,7 +40,7 @@ class FormDAO{
     public function delete(int $id):void
     {
 
-        $this->conn->query("delete from tcc.form where id = :id", ["id" => $id]);
+        $this->conn->query("delete from myForm.form where id = :id", ["id" => $id]);
 
     }
 
@@ -48,7 +48,7 @@ class FormDAO{
     public function get_results(int $id):array
     {
 
-        $cInterviewee =  $this->conn->query("call count_interviewee(:id)",[
+        $cInterviewee =  $this->conn->query("select count(interviewee.id) from myForm.interviewee where form_id = :id",[
             "id" => $id
         ])[0]["c_interviewee"];
 
@@ -60,15 +60,21 @@ class FormDAO{
         if($cInterviewee > 0)
         {
 
-            $return["answers"] = $this->conn->query("call get_results(:id)",[
-                "id" => $id
+            $return["answers"] = $this->conn->query(
+                "select question_id, info, count(boxOption_id) as votes, round(((count(boxOption_id) * 100) / :cInterviewee), 2) as percent
+                    from myForm.interviewee 
+                    inner join myForm.boxAnswer on interviewee.id = boxAnswer.interviewee_id
+                    inner join boxOption on boxOption.id = boxOption_id
+                    where interviewee.form_id = :id
+                    group by boxOption_id",
+            [
+                "id" => $id,
+                "cInterviewee" => $cInterviewee
             ]);
 
         }
 
         return $return;
-
-
 
     }
 
@@ -89,7 +95,7 @@ class FormDAO{
     {
 
         $data = $this->conn->query(
-            "select id, name from tcc.form where research_id = :researchID",
+            "select id, name from myForm.form where research_id = :researchID",
             [
                 "researchID" => $researchID
             ]);
@@ -110,7 +116,7 @@ class FormDAO{
     {
 
         $questions = $this->conn->query(
-            "select id, `index`, statement, required, type from tcc.question where form_id= :id order by `index`",
+            "select id, `index`, statement, required, type from myForm.question where form_id= :id order by `index`",
             [
                 "id" => $id
             ]);
@@ -118,7 +124,7 @@ class FormDAO{
         $return = [];
         $i = 0;
 
-        $this->conn->prepare("select id, info, describe_allowed from tcc.boxOption where question_id = :questionID");
+        $this->conn->prepare("select id, info, describe_allowed from myForm.boxOption where question_id = :questionID");
         foreach($questions as $question)
         {
 
@@ -153,7 +159,7 @@ class FormDAO{
     public function find_answer_by_index(int $id, int $index):array
     {
 
-        $interviewee = $this->conn->query("select id from tcc.interviewee where form_id = :id limit :index,1", [
+        $interviewee = $this->conn->query("select id from myForm.interviewee where form_id = :id limit :index,1", [
             "id" => $id,
             "index" => $index - 1
         ]);
@@ -161,7 +167,7 @@ class FormDAO{
         if(!empty($interviewee)){
 
             $interviewee = $interviewee[0];
-            $questions = $this->conn->query("select id, statement, type from tcc.question where form_id = :id order by `index`;", [
+            $questions = $this->conn->query("select id, statement, type from myForm.question where form_id = :id order by `index`;", [
                 "id" => $id
             ]);
 
@@ -172,7 +178,7 @@ class FormDAO{
                 if($question["type"] == "text")
                 {
 
-                    $answer = $this->conn->query("select answer from tcc.textAnswer where question_id = :questionID and interviewee_id = :intervieweeID", [
+                    $answer = $this->conn->query("select answer from myForm.textAnswer where question_id = :questionID and interviewee_id = :intervieweeID", [
                         "questionID" => $question["id"],
                         "intervieweeID" => $interviewee["id"]
                     ]);
@@ -180,7 +186,7 @@ class FormDAO{
 
                 }else{
 
-                    $answer = $this->conn->query("select boxOption_id as id, describe_text from tcc.boxOption inner join tcc.boxAnswer where question_id = :questionID and boxOption.id = boxAnswer.boxOption_id and interviewee_id = :intervieweeID", [
+                    $answer = $this->conn->query("select boxOption_id as id, describe_text from myForm.boxOption inner join myForm.boxAnswer where question_id = :questionID and boxOption.id = boxAnswer.boxOption_id and interviewee_id = :intervieweeID", [
                         "questionID" => $question["id"],
                         "intervieweeID" => $interviewee["id"]
                     ]);
@@ -206,7 +212,7 @@ class FormDAO{
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("insert into tcc.interviewee (form_id) values(:formID)", [
+        $this->conn->query("insert into myForm.interviewee (form_id) values(:formID)", [
             "formID" => $id
         ]);
 
@@ -215,7 +221,7 @@ class FormDAO{
         {
 
             if($answer["type"] == "text"){
-                $this->conn->query("insert into tcc.textAnswer (question_id, interviewee_id, answer) values(:questionID, :intervieweeID, :answer)", [
+                $this->conn->query("insert into myForm.textAnswer (question_id, interviewee_id, answer) values(:questionID, :intervieweeID, :answer)", [
                     "questionID" => $answer["id"],
                     "intervieweeID" => $intervieweeID,
                     "answer" => $answer["answer"]
@@ -225,7 +231,7 @@ class FormDAO{
                 foreach($answer["answer"] as $option)
                 {
 
-                    $this->conn->query("insert into tcc.boxAnswer (boxOption_id, interviewee_id, describe_text) values(:boxOptionID, :intervieweeID, :describeText)", [
+                    $this->conn->query("insert into myForm.boxAnswer (boxOption_id, interviewee_id, describe_text) values(:boxOptionID, :intervieweeID, :describeText)", [
                         "boxOptionID" => $option["id"],
                         "intervieweeID" => $intervieweeID,
                         "describeText" => $option["describe"] ? $option["describe"] : null
@@ -244,7 +250,7 @@ class FormDAO{
     private function add_questions(int $formID, array $questions):void
     {
 
-        $this->conn->prepare("INSERT INTO tcc.question (form_id, `index`, statement, required, type) values('$formID', :index, :statement, :required, :type)");
+        $this->conn->prepare("INSERT INTO myForm.question (form_id, `index`, statement, required, type) values('$formID', :index, :statement, :required, :type)");
         foreach($questions as $question)
         {
 
@@ -260,7 +266,7 @@ class FormDAO{
             if($question["type"] != "text"){
 
                 $question_id = $this->conn->last_insert_id();
-                $this->conn->prepare("INSERT INTO tcc.boxOption (question_id, info, describe_allowed) values('$question_id', :info, :describeAllowed)");
+                $this->conn->prepare("INSERT INTO myForm.boxOption (question_id, info, describe_allowed) values('$question_id', :info, :describeAllowed)");
                 foreach($question["options"] as $option)
                 {
 
@@ -272,7 +278,7 @@ class FormDAO{
                     $this->conn->execute();
 
                 }
-                $this->conn->prepare("INSERT INTO tcc.question (form_id, `index`, statement, required, type) values('$formID', :index, :statement, :required, :type)");
+                $this->conn->prepare("INSERT INTO myForm.question (form_id, `index`, statement, required, type) values('$formID', :index, :statement, :required, :type)");
 
             }
 

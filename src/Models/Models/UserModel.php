@@ -15,6 +15,7 @@ class UserModel{
 
     private $userDAO;
 
+
     public function __construct()
     {
 
@@ -23,12 +24,12 @@ class UserModel{
     }
 
 
-    public function update(array $data):void
+    public function update(int $id, string $name, string $email):void
     {
 
-        if(self::email_exists($data["email"])){
+        if(self::email_exists($email)){
 
-            $this->userDAO->update($data);
+            $this->userDAO->update($id, $name, $email);
 
             App::action_response("000");
 
@@ -40,12 +41,12 @@ class UserModel{
 
     }
 
-    public function update_pass(int $userID, string $oldPass, string $newPass):void
+    public function update_password(int $id, string $oldPassword, string $newPassword):void
     {
 
-        if(self::verify_password($userID, $oldPass)){
+        if(self::verify_password($id, $oldPassword)){
 
-            $this->userDAO->update_pass($userID, $newPass);
+            $this->userDAO->update_password($id, $newPassword);
 
             App::action_response("000");
 
@@ -58,15 +59,13 @@ class UserModel{
     }
 
 
-    public static function register(array $data):void
+    public static function register(string $name, string $email, string $password):void
     {
 
-        if(!self::email_exists($data["email"])){
+        if(!self::email_exists($email)){
 
             $userDAO = new UserDAO();
-            $userDAO->create($data);
-
-            $_SESSION[self::SESSION] = $userDAO->find_by_email($data["email"], ["id"])->getId();
+            $_SESSION[self::SESSION] = $userDAO->create($name, $email, $password);
 
             App::action_response("000");
 
@@ -79,15 +78,15 @@ class UserModel{
 
     }
 
-    public static function login(array $data):void
+    public static function login(string $email, string $password):void
     {
 
         $userDAO = new UserDAO();
-        $user = $userDAO->find_by_email($data["email"], ["id", "email", "password"]);
+        $user = $userDAO->find_by_email($email, ["id", "email", "password"]);
 
         if(!$user->isEmpty()){
 
-            if($data["password"] == $user->getPassword()){
+            if($password == $user->getPassword()){
 
                 $_SESSION[self::SESSION] = $user->getId();
                 App::action_response("000");
@@ -107,17 +106,13 @@ class UserModel{
 
     }
 
-    public static function logout(bool $redirect = true):void
+    public static function logout():void
     {
 
         session_destroy();
 
-        if($redirect){
-
-            header("location: /");
-            exit;
-
-        }
+        header("location: /");
+        exit;
 
     }
 

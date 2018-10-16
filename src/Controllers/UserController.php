@@ -21,26 +21,24 @@ class UserController{
     public function postUpdate():void
     {
 
-        $_POST["id"] = $_SESSION[UserModel::SESSION];
-
         $user = new UserModel();
-        $user->update($_POST);
+        $user->update($_SESSION[UserModel::SESSION], $_POST["name"], $_POST["email"]);
 
     }
 
 
-    public function getUpdatePass():void
+    public function getUpdatePassword():void
     {
 
         new PageMaker("user", ["update-pass"]);
 
     }
 
-    public function postUpdatePass():void
+    public function postUpdatePassword():void
     {
 
         $user = new UserModel();
-        $user->update_pass($_SESSION[UserModel::SESSION], $_POST["oldPassword"], $_POST["newPassword"]);
+        $user->update_password($_SESSION[UserModel::SESSION], $_POST["oldPassword"], $_POST["newPassword"]);
 
     }
 

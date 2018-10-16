@@ -20,7 +20,7 @@ class AuthController{
     public function postLogin():void
     {
 
-        UserModel::login($_POST);
+        UserModel::login($_POST["email"], $_POST["password"]);
 
     }
 
@@ -35,7 +35,7 @@ class AuthController{
     public function postRegister():void
     {
 
-        UserModel::register($_POST);
+        UserModel::register($_POST["name"], $_POST["email"], $_POST["password"]);
 
     }
 

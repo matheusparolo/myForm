@@ -29,8 +29,8 @@ $this->group('/usuario', function (){
     $this->get("/editar", "\TCC\Controllers\UserController:getUpdate");
     $this->post("/editar", "\TCC\Controllers\UserController:postUpdate");
 
-    $this->get("/editar_senha", "\TCC\Controllers\UserController:getUpdatePass");
-    $this->post("/editar_senha", "\TCC\Controllers\UserController:postUpdatePass");
+    $this->get("/editar_senha", "\TCC\Controllers\UserController:getUpdatePassword");
+    $this->post("/editar_senha", "\TCC\Controllers\UserController:postUpdatePassword");
 
     $this->get("/buscar/{name}", "\TCC\Controllers\UserController:getSearchUser");
 
