@@ -1,7 +1,5 @@
-<a href="/usuario/editar">Editar Informações</a>
-<a href="/usuario/editar_senha">Editar Senha</a>
-
-<form action="javascript: send_form();">
+<h1>Editar Informações</h1>
+<form action="javascript: update();">
 
     <input type="text" id="name" placeholder="Nome" value="{$user->getName()}">
     <input type="email" id="email" placeholder="Email" value="{$user->getEmail()}">
@@ -9,9 +7,21 @@
 
 </form>
 
+
+<h1>Editar Senha</h1>
+<form action="javascript: update_pass();">
+
+    <input type="password" id="oldPassword" placeholder="senha antiga">
+    <input type="password" id="newPassword" placeholder="senha nova">
+    <input type="submit">
+
+</form>
+
 <script>
 
-    function send_form(){
+    function update(){
+
+        codes["100"] = "Email em uso, tente outro!";
 
         $.post("/usuario/editar", {
 
@@ -26,10 +36,27 @@
 
     }
 
+    function update_pass(){
+
+        codes["100"] = "Senha atual errada!";
+
+        $.post("/usuario/editar_senha", {
+
+            "oldPassword" : $("#oldPassword").val(),
+            "newPassword" : $("#newPassword").val()
+
+        }, function(data){
+
+            show_response(data);
+
+        });
+
+    }
+
     codes = {
         "000" : "/usuario",
-        "100" : "Email em uso, tente outro!",
         "200" : "Problema com o banco de dados, tente novamente mais tarde!"
-    }
+    };
+
 
 </script>

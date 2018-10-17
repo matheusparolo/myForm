@@ -26,14 +26,6 @@ class UserController{
 
     }
 
-
-    public function getUpdatePassword():void
-    {
-
-        new PageMaker("user", ["update-pass"]);
-
-    }
-
     public function postUpdatePassword():void
     {
 
