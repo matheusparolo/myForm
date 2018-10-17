@@ -166,37 +166,36 @@ class FormDAO{
                 "id" => $id
             ]);
 
-        $return = [];
-        $i = 0;
 
-        $this->conn->prepare("select id, info, describe_allowed from myForm.boxOption where question_id = :questionID");
-        foreach($questions as $question)
+        $options = $this->conn->select(
+            "select boxOption.id, boxOption.question_id, boxOption.info, boxOption.describe_allowed
+            from question
+            inner join boxOption on question.id = boxOption.question_id
+            where question.form_id = :formID",
+            [
+                "formID" => $id
+            ]);
+
+        foreach ($questions as &$question)
         {
 
-            array_push($return, ($returnJSON ? $question : new GenericEntity($question)));
-            if($question["type"] != "text")
+            foreach($options as $option)
             {
 
-                $this->conn->bind([
-                    "questionID" => $question["id"]
-                ]);
+                if($option["question_id"] == $question["id"]){
 
-                $this->conn->execute();
-                $options = $this->conn->fetch_all();
 
-                if($returnJSON)
-                    $return[$i]["options"] = $options;
-                else{
-                    $temp = [];
-                    foreach($options as $option) array_push($temp, new GenericEntity($option));
-                    $return[$i]->setOptions($temp);
+                    if(!$question["options"]) $question["options"] = [];
+                    array_push($question["options"],($returnJSON) ? $option : new GenericEntity($option) );
+
                 }
 
             }
-            $i++;
+            if(!$returnJSON) $question = new GenericEntity($question);
 
         }
-        return $return;
+
+        return $questions;
 
     }
 

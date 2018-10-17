@@ -46,7 +46,7 @@ class GenericEntity{
     {
 
         $data = array_filter($data, function($var){
-            return $var == "0" ? true : (self::clear_string($var));
+            return $var == "0" || gettype($var) != "string" ? true : (self::clear_string($var));
         });
 
         foreach($data as $key => $value){
