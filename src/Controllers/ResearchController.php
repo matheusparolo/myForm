@@ -41,7 +41,8 @@ class ResearchController
     public function getCreate():void
     {
 
-        new PageMaker("research", ["create"]);
+        $areas = ResearchModel::find_all_application_areas();
+        new PageMaker("research", ["create" => ["areas" => $areas]]);
 
     }
 
@@ -51,7 +52,7 @@ class ResearchController
         if(!$_POST["members"]) $_POST["members"] = [];
 
         $research = new ResearchModel();
-        $research->create($_SESSION[UserModel::SESSION], $_POST["name"], $_POST["members"]);
+        $research->create($_SESSION[UserModel::SESSION], $_POST["name"], $_POST["overview"], $_POST["applicationArea"], $_POST["members"]);
 
     }
 
@@ -59,12 +60,14 @@ class ResearchController
     public function getUpdate($req, $res, $args):void
     {
 
-        $research = ResearchModel::find_by_id($args["id"], ["id", "name"]);
+        $research = ResearchModel::find_by_id($args["id"], ["id", "name", "overview", "application_area"]);
+        $areas = ResearchModel::find_all_application_areas();
         $members = ResearchModel::find_members($args["id"], $_SESSION[UserModel::SESSION]);
 
         new PageMaker("research", [
             "update" => [
                 "research" => $research,
+                "areas" => $areas,
                 "members" => $members
             ]
         ]);
@@ -77,7 +80,7 @@ class ResearchController
         if(!$_POST["members"]) $_POST["members"] = [];
 
         $research = new ResearchModel();
-        $research->update($_POST["id"], $_SESSION[UserModel::SESSION], $_POST["name"], $_POST["members"]);
+        $research->update($_POST["id"], $_SESSION[UserModel::SESSION], $_POST["name"], $_POST["overview"], $_POST["applicationArea"], $_POST["members"]);
 
     }
 

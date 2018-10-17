@@ -21,22 +21,22 @@ class ResearchModel{
     }
 
 
-    public function create(int $userID, string $name, array $members):void
+    public function create(int $userID, string $name, string $overview, string $applicationArea, array $members):void
     {
 
         array_push($members, $userID);
 
-        $this->researchDAO->create($userID, $name, $members);
+        $this->researchDAO->create($userID, $name, $overview, $applicationArea, $members);
         App::action_response("000");
 
     }
 
-    public function update(int $researchID, int $userID, string $name, array $members):void
+    public function update(int $researchID, int $userID, string $name, string $overview, string $applicationArea, array $members):void
     {
 
         array_push($members, $userID);
 
-        $this->researchDAO->update($researchID, $name, $members);
+        $this->researchDAO->update($researchID, $name, $overview, $applicationArea, $members);
         App::action_response("000");
 
     }
@@ -71,6 +71,14 @@ class ResearchModel{
 
         $researchDAO = new ResearchDAO();
         return $researchDAO->find_all_by_user_id($userID);
+
+    }
+
+    public static function find_all_application_areas():array
+    {
+
+        $researchDAO = new ResearchDAO();
+        return $researchDAO->find_all_application_areas();
 
     }
 

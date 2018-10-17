@@ -8,6 +8,23 @@
         <input type="text" id="name" maxlength="256" value="{$research->getName()}" placeholder="Nome da Pesquisa" required>
 
     </div>
+    <div class="row">
+
+        <textarea id="overview" placeholder="Visão Geral" required>{$research->getId()}</textarea>
+
+    </div>
+    <div class="row">
+
+        <input type="text" id="application-area" maxlength="256" placeholder="Area de aplicação da pesquisa" list="list-areas" value="{$research->getApplicationArea()}" required>
+        <datalist id="list-areas">
+            {loop="$areas"}
+
+                <option>{$value->getApplicationArea()}</option>
+
+            {/loop}
+        </datalist>
+
+    </div>
 
     <div class="row">
 

@@ -19,14 +19,16 @@ class ResearchDAO{
     }
 
 
-    public function create(int $userID, string $name, array $members):void
+    public function create(int $userID, string $name, string $overview, string $applicationArea, array $members):void
     {
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("insert into myForm.research(creator_id, name) values(:userID, :name)", [
+        $this->conn->query("insert into myForm.research(creator_id, name, overview, application_area) values(:userID, :name, :overview, :applicationArea)", [
             "userID" => $userID,
-            "name" => $name
+            "name" => $name,
+            "overview" => $overview,
+            "applicationArea" => $applicationArea,
         ]);
 
         $researchID = $this->conn->last_insert_id();
@@ -37,14 +39,16 @@ class ResearchDAO{
 
     }
 
-    public function update(int $researchID, string $name, array $users):void
+    public function update(int $researchID, string $name, string $overview, string $applicationArea, array $users):void
     {
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("update myForm.research set name = :name where id = :researchID",
+        $this->conn->query("update myForm.research set name = :name, overview = :overview, application_area = :applicationArea where id = :researchID",
             [
                 "name" => $name,
+                "overview" => $overview,
+                "applicationArea" => $applicationArea,
                 "researchID" => $researchID
             ]);
 
@@ -110,6 +114,18 @@ class ResearchDAO{
         }
 
         return $return;
+
+    }
+
+    public function find_all_application_areas():array
+    {
+
+        $areas = $this->conn->select("select application_area from myForm.research");
+
+        foreach ($areas as &$area)
+            $area = new GenericEntity($area);
+
+        return $areas;
 
     }
 

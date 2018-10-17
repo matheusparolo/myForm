@@ -1,8 +1,8 @@
 <h1>Editar Informações</h1>
 <form action="javascript: update();">
 
-    <input type="text" id="name" placeholder="Nome" value="{$user->getName()}">
-    <input type="email" id="email" placeholder="Email" value="{$user->getEmail()}">
+    <input type="text" id="name" placeholder="Nome" value="{$user->getName()}" required>
+    <input type="email" id="email" placeholder="Email" value="{$user->getEmail()}" required>
     <input type="submit">
 
 </form>
@@ -11,8 +11,8 @@
 <h1>Editar Senha</h1>
 <form action="javascript: update_pass();">
 
-    <input type="password" id="oldPassword" placeholder="senha antiga">
-    <input type="password" id="newPassword" placeholder="senha nova">
+    <input type="password" id="oldPassword" placeholder="senha antiga" required>
+    <input type="password" id="newPassword" placeholder="senha nova" required>
     <input type="submit">
 
 </form>
