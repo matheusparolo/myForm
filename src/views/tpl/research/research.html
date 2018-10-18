@@ -27,8 +27,7 @@
     function delete_form(id)
     {
 
-        let decision = prompt("Digite \"Confirmar\" para confirmar a operação");
-        if(decision.toLowerCase() === "confirmar")
+        if(confirm("Deseja realmente deletar esse formulario?"))
         {
 
             $.post("/formulario/deletar", {
