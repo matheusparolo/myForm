@@ -19,7 +19,8 @@ function insert_researches(data){
 
                     .addClass("action-t")
                     .attr("title", "Visualizar")
-                    .tooltip({placement: "bottom"})
+                    .attr("data-placement", "bottom")
+                    .tooltip("enable")
                     .text(research["name"])
                     .on("click", function(){
                         window.location.replace("/pesquisa/" + research["id"])
@@ -30,7 +31,8 @@ function insert_researches(data){
 
                     .addClass("action-t")
                     .attr("title", "Visualizar")
-                    .tooltip({placement: "bottom"})
+                    .attr("data-placement", "bottom")
+                    .tooltip("enable")
                     .text(userID === research["creatorId"] ? "você" : user["name"])
                     .on("click", function(){
                         window.location.replace("/pesquisa/" + research["id"])
@@ -41,7 +43,8 @@ function insert_researches(data){
 
                     .addClass("action-t")
                     .attr("title", "Visualizar")
-                    .tooltip({placement: "bottom"})
+                    .attr("data-placement", "bottom")
+                    .tooltip("enable")
                     .text(research["applicationArea"])
                     .on("click", function(){
                         window.location.replace("/pesquisa/" + research["id"])

@@ -78,7 +78,7 @@ class UserDAO{
 
     }
 
-    public function find_all_by_name_like(int $id, string $name, bool $returnArray):array
+    public function find_all_by_name_like(int $id, string $name, bool $returnWithoutEntity):array
     {
 
         $data =  $this->conn->select("select id, name, email from myForm.user where name like CONCAT('%',:name,'%') and id != :id", [
@@ -86,7 +86,7 @@ class UserDAO{
             "name" => $name
         ]);
 
-        if(!$returnArray)
+        if(!$returnWithoutEntity)
             foreach($data as &$line)
                 $line = new GenericEntity($line);
 

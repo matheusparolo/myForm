@@ -72,19 +72,19 @@ class FormModel{
 
     }
 
-    public static function find_questions(int $id, bool $returnJSON = false):array
+    public static function find_questions(int $id, bool $returnWithoutEntity = false):array
     {
 
         $formDAO = new FormDAO();
-        return $formDAO->find_questions($id, $returnJSON);
+        return $formDAO->find_questions($id, $returnWithoutEntity);
 
     }
 
-    public static function find_all_by_research_id(int $researchID, bool $returnArray = false):array
+    public static function find_all_by_research_id(int $researchID, bool $returnWithoutEntity = false):array
     {
 
         $formDAO = new FormDAO();
-        return $formDAO->find_all_by_research_id($researchID, $returnArray);
+        return $formDAO->find_all_by_research_id($researchID, $returnWithoutEntity);
 
     }
 

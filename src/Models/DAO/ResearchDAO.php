@@ -71,7 +71,7 @@ class ResearchDAO{
     }
 
 
-    public function find_by_id(int $id, array $columns = ["*"], bool $returnArray = false)
+    public function find_by_id(int $id, array $columns = ["*"], bool $returnWithoutEntity = false)
     {
 
         $data = $this->conn->select("select " . join(",", $columns) . " from research where id = :id",
@@ -79,7 +79,7 @@ class ResearchDAO{
                 "id" => $id
             ]);
 
-        if(!$returnArray){
+        if(!$returnWithoutEntity){
             return new GenericEntity(!empty($data) ? $data[0] : []);
         }else{
             return !empty($data) ? $data[0] : [];
@@ -87,7 +87,7 @@ class ResearchDAO{
 
     }
 
-    public function find_creator(int $id, array $columns = ["*"], bool $returnArray = false)
+    public function find_creator(int $id, array $columns = ["*"], bool $returnWithoutEntity = false)
     {
 
         $data = $this->conn->select(
@@ -98,7 +98,7 @@ class ResearchDAO{
                 "id" => $id
             ]);
 
-        if(!$returnArray){
+        if(!$returnWithoutEntity){
             return new GenericEntity(!empty($data) ? $data[0] : []);
         }else{
             return !empty($data) ? $data[0] : [];
@@ -106,7 +106,7 @@ class ResearchDAO{
 
     }
 
-    public function find_all_by_user_id(int $userID, bool $returnArray):array
+    public function find_all_by_user_id(int $userID, bool $returnWithoutEntity):array
     {
 
         $researches = $this->conn->select(
@@ -123,7 +123,7 @@ class ResearchDAO{
         foreach($researches as $line)
         {
 
-            if(!$returnArray){
+            if(!$returnWithoutEntity){
                 array_push($return, [
                     "researchEntity" => new GenericEntity([
 
@@ -177,7 +177,7 @@ class ResearchDAO{
 
     }
 
-    public function find_members(int $researchID, int $userID, bool $returnArray = false):array
+    public function find_members(int $researchID, int $userID, bool $returnWithoutEntity = false):array
     {
 
         $users = $this->conn->select(
@@ -189,7 +189,7 @@ class ResearchDAO{
                 "userID" => $userID
             ]);
 
-        if(!$returnArray)
+        if(!$returnWithoutEntity)
             foreach($users as &$user)
                 $user = new GenericEntity($user);
 

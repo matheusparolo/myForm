@@ -147,11 +147,11 @@ class UserModel{
 
     }
 
-    public static function find_all_by_name_like(int $id, string $name, bool $returnArray = false):void
+    public static function find_all_by_name_like(int $id, string $name, bool $returnWithoutEntity = false):void
     {
 
         $userDAO = new UserDAO();
-        echo json_encode($userDAO->find_all_by_name_like($id, $name, $returnArray));
+        echo json_encode($userDAO->find_all_by_name_like($id, $name, $returnWithoutEntity));
 
     }
 

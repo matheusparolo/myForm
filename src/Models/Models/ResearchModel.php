@@ -50,35 +50,35 @@ class ResearchModel{
     }
 
 
-    public static function find_by_id(int $id, array $columns = ["*"], bool $returnArray = false)
+    public static function find_by_id(int $id, array $columns = ["*"], bool $returnWithoutEntity = false)
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_by_id($id, $columns, $returnArray);
+        return $researchDAO->find_by_id($id, $columns, $returnWithoutEntity);
 
     }
 
-    public static function find_creator(int $id, array $columns = ["*"], bool $returnArray = false)
+    public static function find_creator(int $id, array $columns = ["*"], bool $returnWithoutEntity = false)
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_creator($id, $columns, $returnArray);
+        return $researchDAO->find_creator($id, $columns, $returnWithoutEntity);
 
     }
 
-    public static function find_members(int $id, int $userID, bool $returnArray = false):array
+    public static function find_members(int $id, int $userID, bool $returnWithoutEntity = false):array
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_members($id, $userID, $returnArray);
+        return $researchDAO->find_members($id, $userID, $returnWithoutEntity);
 
     }
 
-    public static function find_all_by_user_id(int $userID, bool $returnArray = false):array
+    public static function find_all_by_user_id(int $userID, bool $returnWithoutEntity = false):array
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_all_by_user_id($userID, $returnArray);
+        return $researchDAO->find_all_by_user_id($userID, $returnWithoutEntity);
 
     }
 

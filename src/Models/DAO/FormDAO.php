@@ -142,7 +142,7 @@ class FormDAO{
 
     }
 
-    public function find_all_by_research_id(int $researchID, bool $returnArray = false):array
+    public function find_all_by_research_id(int $researchID, bool $returnWithoutEntity = false):array
     {
 
         $forms = $this->conn->select(
@@ -151,7 +151,7 @@ class FormDAO{
                 "researchID" => $researchID
             ]);
 
-        if(!$returnArray)
+        if(!$returnWithoutEntity)
             foreach($forms as &$form)
                 $form =  new GenericEntity($form);
 
@@ -159,7 +159,7 @@ class FormDAO{
 
     }
 
-    public function find_questions(int $id, bool $returnJSON = false):array
+    public function find_questions(int $id, bool $returnWithoutEntity = false):array
     {
 
         $questions = $this->conn->select(
@@ -188,12 +188,12 @@ class FormDAO{
 
 
                     if(!$question["options"]) $question["options"] = [];
-                    array_push($question["options"],($returnJSON) ? $option : new GenericEntity($option) );
+                    array_push($question["options"],($returnWithoutEntity) ? $option : new GenericEntity($option) );
 
                 }
 
             }
-            if(!$returnJSON) $question = new GenericEntity($question);
+            if(!$returnWithoutEntity) $question = new GenericEntity($question);
 
         }
 
