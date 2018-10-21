@@ -1,6 +1,6 @@
 # MyForm
 
-##Instruções
+## Instruções
 
 Para usar esse sistema em um servidor interno siga os passos:
 
@@ -20,9 +20,9 @@ https://drive.google.com/file/d/1M6CmerIwNB1fsNdNSaJczgcB8amkj3qw/view?usp=shari
 - Arquivo SQL:
 https://drive.google.com/file/d/14BQrydmI-saFtOeYQY0uidjjrfcsWy6m/view?usp=sharing
 
-##.env
+## .env
 
-###Definições
+### Definições
 | Variavel | Tipo de Valor | Descrição |
 | --- | --- | --- |
 | appName | string | Nome do aplicativo, será usado por padrão no titulo das paginas
@@ -34,7 +34,7 @@ https://drive.google.com/file/d/14BQrydmI-saFtOeYQY0uidjjrfcsWy6m/view?usp=shari
 | dbDebug | boolean | Define a ativação do debug do banco de dados
 | slimDebug | boolean | Define a ativação do debug do Slim Framework
 
-###Exemplo
+### Exemplo
 ```
 appName=MyForm
 db=mysql
@@ -115,14 +115,14 @@ slimDebug=true
 | POST | JSON | /formulario/deletar | Deleta o formulario | Auth, ResearchMembber | | 000, 200, 300, 400
 | POST | JSON | /formulario|resposta/enviar | Envia uma resposta para o formulario | Auth, ResearchMember | | 000, 200, 300, 400
 
-##Middlewares
+## Middlewares
 | Nome | Descrição |
 | --- | --- |
 | Auth | Verifica se o cliente está autenticado
 | ResearchCreator | Verifica se o cliente é o criador da pesquisa requisitada
 | ResearchMember | Verifica se o cliente membro da pesquisa requisitada
 
-##Códigos de Resposta
+## Códigos de Resposta
 | Código | Significado |
 | --- | --- |
 | 000 | Sucesso|
