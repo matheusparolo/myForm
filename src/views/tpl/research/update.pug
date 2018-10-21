@@ -1,0 +1,59 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/global/table.css')
+    link(rel='stylesheet', href='/assets/css/research/create.css')
+
+block scripts
+    script(src='/assets/js/research/update.js')
+
+block content
+    .col-12.col-md-6.col-card
+        form#form-update.card(action="javascript:")
+            .card-header Informações
+            .card-body
+                input#id(type='hidden', name='id', value=id)
+                .input-group.mb-3
+                    input#name.form-control(type='text', name='name', placeholder='Nome', data-required='1')
+                .input-group.mb-3
+                    input#area.form-control(type='text', name='application-area', list='list-areas', placeholder='Area de aplicação')
+                    datalist#list-areas
+                        each area in areas
+                            option=$area->getApplicationArea()
+
+                .form-group.mb-3
+                    textarea#overview.form-control(name='overview', rows='3', placeholder='Visão Geral')
+            .card-footer.pb-0
+                .form-group
+                    input.btn.btn-primary.btn-block(type='submit', value='Atualizar')
+
+    .col-12.col-md-6.col-card
+        .card
+            .card-header Membros
+            .card-body
+                table.table.table-hover
+                    thead
+                        tr
+                            th Nome
+                            th Email
+                            th.action-i
+                                img#search-member(title='Adicionar membro', src='/assets/media/img/icons/add.png')
+                                #search(style='display: none')
+                                    .card
+                                        .card-header
+                                            | Pesquisar usuário
+                                            span#close-search.close ×
+                                        .card-body
+                                            .input-group
+                                                input#input-search.form-control(type='search', placeholder='Nome do usuário')
+                                                button#btn-search.btn
+                                                    img(src='/assets/media/img/icons/search.png', alt='Pesquisar')
+                                            div
+                                                table.table.table-hover.mt-3
+                                                    thead
+                                                        tr
+                                                            th Nome
+                                                            th Email
+                                                            th
+                                                    tbody#table-users
+                    tbody#table-members

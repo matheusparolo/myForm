@@ -1,0 +1,12 @@
+.card img{
+    width: 20px;
+    height: 20px;
+}
+
+.input-group-text{
+    background-color: #fff;
+}
+
+.input-group-append{
+    cursor: pointer;
+}

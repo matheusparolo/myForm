@@ -1,0 +1,36 @@
+main{
+    padding: 2rem;
+}
+
+.card{
+    border-radius: 0;
+    box-shadow: 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+}
+
+.card-header{
+    font-size: 14pt;
+    background-color: #ffffff;
+}
+
+.card-body{
+    padding: 2rem;
+    padding-bottom: 0.5rem;
+    overflow: auto;
+}
+
+.col-card{
+    padding: 0.5rem !important;
+}
+
+.card-header{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.card-title{
+    font-size: 18pt;
+}
+.card-footer
+{
+    background-color: #fff
+}

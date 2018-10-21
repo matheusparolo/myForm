@@ -1,0 +1,27 @@
+
+.question-type, .question-actions{
+    display: inline-block;
+}
+.question-statement .input-group-prepend{
+    width: 6rem;
+}
+.question-actions > div
+{
+    display: inline-block;
+    font-size: 12pt;
+}
+.card img
+{
+    width: 26px;
+}
+.option input[type="text"]
+{
+    border-radius: .25rem !important;
+}
+.custom-checkbox label{
+    padding-top: 0.15rem;
+}
+.custom-control input, .custom-control label
+{
+    cursor: pointer;
+}

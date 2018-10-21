@@ -1,0 +1,24 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/global/table.css')
+
+block scripts
+    script(src='/assets/js/research/index.js')
+
+block content
+    .col-12
+        .card
+            .card-header Pesquisas
+            .card-body
+                table.table.table-hover
+                    thead
+                        tr
+                            th Nome
+                            th Cordenador
+                            th Area de Atuação
+                            th
+                            th.action-i
+                                a(href='/pesquisa/criar')
+                                    img(title='Criar pesquisa', src='/assets/media/img/icons/add.png')
+                    tbody#researches

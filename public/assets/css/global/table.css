@@ -1,0 +1,24 @@
+tr img{
+    width: 24px;
+}
+
+tr{
+    transition-duration: .15s;
+}
+
+.action-i, tr td{
+    cursor: pointer;
+}
+
+.action-i > img, .action-i > a{
+    transition-duration: .15s;
+}
+
+.action-i:hover > img, .action-i:hover > a{
+    opacity: .7;
+}
+
+.table td{
+    font-size: 16px;
+    font-weight: 400;
+}

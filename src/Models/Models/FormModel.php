@@ -80,11 +80,11 @@ class FormModel{
 
     }
 
-    public static function find_all_by_research_id(int $researchID):array
+    public static function find_all_by_research_id(int $researchID, bool $returnArray = false):array
     {
 
         $formDAO = new FormDAO();
-        return $formDAO->find_all_by_research_id($researchID);
+        return $formDAO->find_all_by_research_id($researchID, $returnArray);
 
     }
 

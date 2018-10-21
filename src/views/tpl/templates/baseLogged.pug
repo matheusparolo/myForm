@@ -1,0 +1,31 @@
+extends base
+
+block linksMaster
+    link(rel="stylesheet", href="/assets/css/global/menu.css")
+    link(rel="stylesheet", href="/assets/css/global/alert.css")
+    link(rel="stylesheet", href="/assets/css/global/card.css")
+    block links
+
+block scriptsMaster
+    script(src="/assets/js/global/master.js")
+    block scripts
+
+block body
+
+    nav#menu.navbar.navbar-expand.navbar-light
+        a.navbar-brand(href="/") MyForm
+        div.mr-auto
+        ul.navbar-nav
+
+            li.nav-item
+                a.nav-link(href="/pesquisa") Pesquisas
+
+            li.nav-item
+                a.nav-link(href="/usuario/editar") Perfil
+
+            li.nav-item
+                a.nav-link(href="/sair") Sair
+
+    main.container
+        .row.no-gutters
+            block content

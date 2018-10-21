@@ -14,23 +14,23 @@ class AnswerController
     public function getResults($req,$res,$args):void
     {
 
-        $results = FormModel::get_results($args["id"]);
+        $form = FormModel::find_by_id($args["id"], ["name"]);
 
-        new PageMaker("form", ["results" => ["results" => $results]]);
-
+        new PageMaker("form/results", [
+            "formName" => $form->getName(),
+            "formID" => $args["id"]
+        ]);
 
     }
 
-
-    public function getAnswer($req, $res, $args):void
+    public function getResultsJSON($req,$res,$args):void
     {
 
-        $form = FormModel::find_by_id($args["id"], ["id", "name"]);
-        $questions = FormModel::find_questions($args["id"]);
-
-        new PageMaker("form", ["answer" => ["form" => $form, "questions" => $questions]]);
+        $results = FormModel::get_results($args["id"]);
+        echo json_encode($results);
 
     }
+
 
     public function getAnswerByIndex($req, $res, $args)
     {
@@ -44,10 +44,7 @@ class AnswerController
     public function getAddAnswer($req, $res, $args):void
     {
 
-        $form = FormModel::find_by_id($args["id"], ["id", "name"]);
-        $questions = FormModel::find_questions($args["id"]);
-
-        new PageMaker("form", ["submit-answer" => ["form" => $form, "questions" => $questions]]);
+        new PageMaker("form/submit-answer", ["formID" => $args["id"]]);
 
     }
 

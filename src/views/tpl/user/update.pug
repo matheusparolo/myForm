@@ -1,0 +1,70 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/user/update.css')
+block scripts
+    script(src='/assets/js/user/main.js')
+    script(src='/assets/js/user/update.js')
+
+block content
+
+    div.col-12.col-md-6.col-card
+
+        // Form infos
+        form#form-infos.card(action='javascript:')
+            div.card-header Editar Informações
+            div.card-body
+
+                div.input-group.mb-3
+                    div.input-group-prepend
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/identity.png')
+                    input.form-control(type='text', name='name', placeholder='Nome', value=$user->getName(), data-required='1')
+
+                div.input-group.mb-3
+                    .input-group-prepend
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/email.png')
+                    input.form-control(type='email', name='email', placeholder='Email', value=$user->getEmail(), data-required='1')
+
+            div.card-footer.pb-0
+                div.form-group
+                    input.btn.btn-primary.btn-block(type='submit', value='Salvar')
+
+    div.col-12.col-md-6.col-card
+
+        // Form Passwords
+        form#form-passwords.card(action='javascript:')
+            div.card-header Editar Senha
+            div.card-body
+
+                div.input-group.mb-3
+                    div.input-group-prepend
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/password.png')
+                    input.form-control(type='password', name='old-password', placeholder='Senha atual', data-required='1')
+                    div.input-group-append(title='Mostrar Senha')
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/closed_eye.png')
+
+                div.input-group.mb-3
+                    div.input-group-prepend
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/password.png')
+                    input.form-control(type='password', name='new-password', placeholder='Nova senha', data-required='1')
+                    div.input-group-append(title='Mostrar Senha')
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/closed_eye.png')
+
+                div.input-group.mb-3
+                    div.input-group-prepend
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/password.png')
+                    input.form-control(type='password', name='confirm-new-password', placeholder='Confirmar senha', data-required='1')
+                    div.input-group-append(title='Mostrar Senha')
+                        span.input-group-text
+                            img(src='/assets/media/img/icons/closed_eye.png')
+
+            div.card-footer.pb-0
+                div.form-group
+                    input.btn.btn-primary.btn-block(type='submit', value='Salvar')

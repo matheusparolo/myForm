@@ -1,0 +1,25 @@
+#menu{
+
+    background-color: rgb(255,255,255);
+    border-bottom: 1px solid rgb(231,231,231);
+
+}
+
+#menu li a{
+
+    font-weight: 700;
+    padding: 0 1rem;
+    margin: 0;
+    color: rgb(45,45,45);
+    transition-duration: 0.15s;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+}
+
+#menu li a:hover
+{
+
+    color: rgb(120,120,120);
+
+}

@@ -16,10 +16,20 @@ class ResearchController
     public function index():void
     {
 
-        $userID = $_SESSION[UserModel::SESSION];
-        $researches = ResearchModel::find_all_by_user_id($userID);
+        new PageMaker("research/index", []);
 
-        new PageMaker("research", ["index" => ["researches" => $researches, "userID" => $userID]]);
+    }
+
+    public function indexJson():void
+    {
+
+        $userID = $_SESSION[UserModel::SESSION];
+        $researches = ResearchModel::find_all_by_user_id($userID, true);
+
+        echo json_encode([
+           "userID" => $userID,
+           "researches" => $researches
+        ]);
 
     }
 
@@ -27,13 +37,25 @@ class ResearchController
     public function getResearch($req, $res, $args):void
     {
 
-        $research = ResearchModel::find_by_id($args["id"], ["id", "name"]);
-        $forms = FormModel::find_all_by_research_id($args["id"]);
+        new PageMaker("research/research", [
+            "id" => $args["id"]
+        ]);
 
-        new PageMaker("research", ["research" => [
-            "research" => $research,
-            "forms" => $forms
-        ]]);
+    }
+
+    public function getResearchJson($req, $res, $args):void
+    {
+
+        $research = ResearchModel::find_by_id($args["id"], ["id", "name", "overview", "application_area"], true);
+        $creator = ResearchModel::find_creator($args["id"], ["user.name"], true);
+        $forms = FormModel::find_all_by_research_id($args["id"], true);
+        echo json_encode(
+            [
+                "research" => $research,
+                "creator" => $creator,
+                "forms" => $forms
+            ]
+        );
 
     }
 
@@ -42,17 +64,20 @@ class ResearchController
     {
 
         $areas = ResearchModel::find_all_application_areas();
-        new PageMaker("research", ["create" => ["areas" => $areas]]);
+        new PageMaker("research/create", ["areas" => $areas]);
 
     }
 
     public function postCreate():void
     {
 
-        if(!$_POST["members"]) $_POST["members"] = [];
+        if(!$_POST["members"])
+            $_POST["members"] = [];
+        else
+            $_POST["members"] = explode(",", $_POST["members"]);
 
         $research = new ResearchModel();
-        $research->create($_SESSION[UserModel::SESSION], $_POST["name"], $_POST["overview"], $_POST["applicationArea"], $_POST["members"]);
+        $research->create($_SESSION[UserModel::SESSION], $_POST["name"], $_POST["overview"], $_POST["application-area"], (array)$_POST["members"]);
 
     }
 
@@ -60,27 +85,34 @@ class ResearchController
     public function getUpdate($req, $res, $args):void
     {
 
-        $research = ResearchModel::find_by_id($args["id"], ["id", "name", "overview", "application_area"]);
         $areas = ResearchModel::find_all_application_areas();
-        $members = ResearchModel::find_members($args["id"], $_SESSION[UserModel::SESSION]);
+        new PageMaker("research/update", ["id" => $args["id"], "areas" => $areas]);
 
-        new PageMaker("research", [
-            "update" => [
-                "research" => $research,
-                "areas" => $areas,
-                "members" => $members
-            ]
+    }
+
+    public function getUpdateJson($req, $res, $args):void
+    {
+
+        $research = ResearchModel::find_by_id($args["id"], ["id", "name", "overview", "application_area"], true);
+        $members = ResearchModel::find_members($args["id"], $_SESSION[UserModel::SESSION], true);
+        echo json_encode([
+            "research" => $research,
+            "members" => $members
         ]);
 
     }
 
+
     public function postUpdate():void
     {
 
-        if(!$_POST["members"]) $_POST["members"] = [];
+        if(!$_POST["members"])
+            $_POST["members"] = [];
+        else
+            $_POST["members"] = explode(",", $_POST["members"]);
 
         $research = new ResearchModel();
-        $research->update($_POST["id"], $_SESSION[UserModel::SESSION], $_POST["name"], $_POST["overview"], $_POST["applicationArea"], $_POST["members"]);
+        $research->update($_POST["id"], $_SESSION[UserModel::SESSION], $_POST["name"], $_POST["overview"], $_POST["application-area"], $_POST["members"]);
 
     }
 

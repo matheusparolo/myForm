@@ -1,0 +1,38 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/global/switch.css')
+    link(rel='stylesheet', href='/assets/css/form/results.css')
+
+block scripts
+    script(src='/assets/js/form/results.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js')
+
+block content
+    .col-12.col-card
+        .card#card-results(data-id=formID)
+            .card-header
+                .input-group
+                    input#show-results.btn.btn-secondary.form-control(type='button', value='Resultados')
+                    input#show-answers.btn.btn-secondary.form-control(type='button', value='Respostas Individuais')
+            #answers.card-body.mb-4(style="display:none")
+                .pl-1.mb-4
+                    p.card-title=formName
+                    p.card-subtitle
+                        | Resposta de indice
+                        span#answer-index
+                #questions
+
+            #results-card.card-body.mb-4
+                .pl-1.mb-4
+                    p.card-title=formName
+                    p.card-subtitle
+                        | Numero de entrevistados:
+                        span#c-interviewee
+                #results
+
+            .card-footer(style="display:none")
+                .form-inline.float-right
+                    input#input-index-answer.form-control(type='number', placeholder='Indice')
+                    input#search-answer.form-control.btn.btn-primary.ml-1(type='button', value='Ir')
+                    input#next-answer.form-control.btn.btn-primary.ml-2(type='button', value='Proxima resposta')

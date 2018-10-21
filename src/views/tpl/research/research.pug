@@ -1,0 +1,33 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/global/table.css')
+    link(rel='stylesheet', href='/assets/css/research/research.css')
+
+block scripts
+    script(src='/assets/js/research/research.js')
+
+block content
+    .col-12.col-md-6.col-card
+        #research.card(data-id=id)
+            .card-header Visão Geral
+            .card-body.pb-5
+                h6#area.card-subtitle.text-muted
+                h1#name.card-title.pb-3
+                p#overview.card-text.text-justify
+                h6#creator-name.card-subtitle.text-right.text-muted
+    .col-12.col-md-6.col-card
+        .card
+            .card-header Formulários
+            .card-body
+                table.table.table-hover
+                    thead
+                        tr
+                            th Nome
+                            th
+                            th
+                            th
+                            th.action-i(title='Criar pesquisa')
+                                a(href='/formulario/criar/' + id)
+                                    img(title='Criar formulário', src='/assets/media/img/icons/add.png')
+                    tbody#table-forms

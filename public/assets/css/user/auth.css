@@ -1,0 +1,207 @@
+:root{
+    --primary: #0C3563;
+}
+
+body{
+
+    background-color: var(--primary);
+
+}
+
+#background
+{
+
+    position: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 45%;
+    left: 25%;
+    bottom: 0;
+    filter: blur(3px);
+
+}
+
+main{
+    margin-top: 20vh;
+    height: 60vh;
+}
+
+#div-form, #div-text{
+    position: relative;
+}
+
+/* Text */
+#div-text{
+    background-color: rgba(0,0,0,0.8);
+    height: 70%;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+#div-text p{
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+}
+#div-text .btn{
+    color: rgb(241,241,241);
+    background-color: transparent;
+    border: 1px solid rgb(241,241,241);
+}
+
+#div-text .btn:focus{
+    box-shadow: none    ;
+}
+
+#div-text .btn:hover{
+    background-color: rgb(241,241,241);
+    color: rgb(51,51,51);
+}
+
+/* Form */
+#div-form{
+
+    height: 100%;
+    background-color: #fff;
+    top: -85%;
+    transition-duration: 0.40s;
+    min-height: 400px;
+    min-width: 280px;
+    padding: 2rem;
+    width: 90%;
+    left: 5%;
+    margin-bottom: 2rem;
+
+}
+
+.sign-text{
+
+    width: 50%;
+    float: left;
+    padding: 5%;
+    color: rgb(241,241,241);
+    display: none;
+
+}
+#div-text{
+    visibility: hidden;
+}
+
+#register{
+    display: none;
+}
+
+#div-form input:focus{
+    box-shadow: none;
+}
+
+
+#div-form img{
+    width: 20px;
+    height: 20px;
+}
+
+#div-form .input-group-text{
+    background-color: #fff;
+}
+
+.input-group-append{
+    cursor: pointer;
+}
+
+.to-btn{
+    width: 50%;
+    text-align: left;
+    background-color: #fff;
+    padding-left: 0;
+}
+
+.to-btn:focus{
+    box-shadow: none;
+}
+
+.sign-h1{
+    display: none;
+}
+
+.custom-control-input:checked~.custom-control-label::before{
+    background-color: var(--primary) !important;
+}
+
+input[type="submit"]{
+    border: 0 !important;
+    background-color: var(--primary);
+}
+input[type="submit"]:hover{
+    background-color: #052163;
+}
+
+.sign-h1, .to-btn{
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 1.5rem;
+    float: left;
+    margin-bottom: 2rem;
+    color: var(--primary);
+}
+
+.container-fluid, main
+{
+
+    padding-left: 0 !important;
+
+}
+
+@media (min-width: 370px)
+{
+
+    .container-fluid, main
+    {
+
+        padding-left: 15px !important;
+
+    }
+
+}
+
+@media (max-width: 767px), (max-height: 575px){
+
+    #div-form{
+        left: 5% !important;
+    }
+
+}
+
+@media (min-width: 768px) and (min-height: 576px){
+
+    .to-btn{
+        display: none;
+    }
+    .sign-h1{
+        display: unset !important;
+    }
+    #div-form{
+        width: 50%;
+        left: 47%;
+        margin-bottom: 0;
+    }
+    #div-text{
+        visibility: unset;
+    }
+    .sign-text{
+        display: unset;
+    }
+    main {
+        margin-top: 30vh;
+    }
+
+}
+
+
+@media (min-width: 1440px) {
+
+    .to-btn, .sign-h1{
+        font-size: 2rem;
+    }
+    #div-text p{
+        font-size: 1rem;
+    }
+
+}

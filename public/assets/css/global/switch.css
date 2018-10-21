@@ -1,0 +1,143 @@
+/*
+ * Copyright (c) 2018 by Justin (https://codepen.io/jstn/pen/yKEJjO)
+ *
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+.switch {
+    position: relative;
+}
+.switch input {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 0%;
+    margin: 0 0;
+    cursor: pointer;
+    opacity: 0;
+}
+.switch input + span {
+    cursor: pointer;
+    padding-left: 45px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.switch input + span:before {
+    border-radius: 20px;
+    position: absolute;
+    left: 0px;
+    display: inline-block;
+    content: "";
+    height: 20px;
+    width: 40px;
+    background: #ddd;
+    transition: background 0.2s ease-out;
+    margin-top: 0.05rem;
+}
+.switch input + span:after {
+    border: solid #ddd 2px;
+    background-clip: padding-box;
+    border-radius: 20px;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    left: 0px;
+    top: 0;
+    display: block;
+    background: #ffffff;
+    transition: margin-left 0.1s ease-in-out;
+    text-align: center;
+    font-weight: bold;
+    content: "";
+    margin-top: 0.05rem;
+}
+.switch input + span > h4 {
+    display: inline;
+}
+.switch input:checked + span:after {
+    content: "";
+    margin-left: 20px;
+    border: solid transparent 2px;
+    background-clip: padding-box;
+    -webkit-animation: popIn ease-in 0.3s normal;
+    animation: popIn ease-in 0.3s normal;
+}
+.switch input:checked + span:before {
+    background: #5cb85c;
+    transition: background 0.2s ease-in;
+}
+.switch input:not(:checked) + span:after {
+    -webkit-animation: popOut ease-in 0.3s normal;
+    animation: popOut ease-in 0.3s normal;
+}
+.switch.switch-sm {
+    line-height: 10px;
+}
+.switch.switch-sm input + span {
+    padding-left: 25px;
+}
+.switch.switch-sm input + span:before {
+    width: 20px;
+}
+.switch.switch-sm input + span:before, .switch.switch-sm input + span:after {
+    height: 10px;
+    line-height: 10px;
+}
+.switch.switch-sm input + span:after {
+    width: 10px;
+}
+.switch.switch-sm input:checked + span:after {
+    margin-left: 10px;
+}
+.switch.switch-md {
+    line-height: 30px;
+}
+.switch.switch-md input + span {
+    padding-left: 65px;
+}
+.switch.switch-md input + span:before {
+    width: 60px;
+}
+.switch.switch-md input + span:before, .switch.switch-md input + span:after {
+    border-radius: 30px;
+    height: 30px;
+    line-height: 30px;
+}
+.switch.switch-md input + span:after {
+    width: 30px;
+    vertical-align: middle;
+}
+.switch.switch-md input:checked + span:after {
+    margin-left: 30px;
+}
+.switch.switch-lg {
+    line-height: 40px;
+}
+.switch.switch-lg input + span {
+    padding-left: 90px;
+}
+.switch.switch-lg input + span:before {
+    width: 80px;
+}
+.switch.switch-lg input + span:before, .switch.switch-lg input + span:after {
+    border-radius: 40px;
+    height: 40px;
+}
+.switch.switch-lg input + span:after {
+    width: 40px;
+    vertical-align: middle;
+}
+.switch.switch-lg input:checked + span:after {
+    margin-left: 40px;
+}

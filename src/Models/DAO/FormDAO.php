@@ -52,22 +52,22 @@ class FormDAO{
         {
 
             $this->conn->query("update myForm.question set `index` = :index, required = :required, statement = :statement where id = :id",[
-                "id" => $question["id"],
-                "index" => $question["index"],
-                "required" => $question["required"] == "true" ? 1 : 0,
-                "statement" => $question["statement"]
+                "id" => $question->id,
+                "index" => $question->index,
+                "statement" => $question->statement,
+                "required" => $question->required == "true" ? 1 : 0,
             ]);
 
-            if($question["options"])
+            if($question->options)
             {
 
-                foreach($question["options"] as $option)
+                foreach($question->options as $option)
                 {
 
                     $this->conn->query("update myForm.boxOption set info = :info, describe_allowed = :describeAllowed where id = :id",[
-                        "id" => $option["id"],
-                        "info" => $option["info"],
-                        "describeAllowed" => $option["describe_allowed"] == "true" ? 1 : 0
+                        "id" => $option->id,
+                        "info" => $option->info,
+                        "describeAllowed" => $option->describe_allowed == "true" || $option->describe_allowed == "1" ? 1 : 0
                     ]);
 
                 }
@@ -97,24 +97,30 @@ class FormDAO{
 
         $return = [
             "c_interviewee" => $cInterviewee,
-            "answers" => []
+            "answers" => [],
+            "questions" => []
         ];
 
         if($cInterviewee > 0)
         {
 
             $return["answers"] = $this->conn->select(
-                "select `index`, statement, question_id, info, count(boxOption_id) as votes, round(((count(boxOption_id) * 100) / :cInterviewee), 2) as percent
-                    from myForm.interviewee 
+                "select question_id, info, count(boxOption_id) as votes
+                    from interviewee 
                     inner join myForm.boxAnswer on interviewee.id = boxAnswer.interviewee_id
                     inner join boxOption on boxOption.id = boxOption_id
-                    inner join question on question.id = boxOption.question_id
                     where interviewee.form_id = :id
                     group by boxOption_id",
             [
-                "id" => $id,
-                "cInterviewee" => $cInterviewee
+                "id" => $id
             ]);
+
+            $return["questions"] = $this->conn->select(
+                "select id, `index`, type, statement from question where form_id = :formID and type != 'text'",
+                [
+                    "formID" => $id
+                ]
+            );
 
         }
 
@@ -136,24 +142,20 @@ class FormDAO{
 
     }
 
-    public function find_all_by_research_id(int $researchID):array
+    public function find_all_by_research_id(int $researchID, bool $returnArray = false):array
     {
 
-        $data = $this->conn->select(
+        $forms = $this->conn->select(
             "select id, name from myForm.form where research_id = :researchID",
             [
                 "researchID" => $researchID
             ]);
 
-        $return = [];
-        foreach($data as $line)
-        {
+        if(!$returnArray)
+            foreach($forms as &$form)
+                $form =  new GenericEntity($form);
 
-            array_push($return, new GenericEntity($line));
-
-        }
-
-        return $return;
+        return $forms;
 
     }
 
@@ -297,24 +299,24 @@ class FormDAO{
         {
 
             $this->conn->bind([
-                "index" => $question["index"],
-                "statement" => $question["statement"],
-                "required" => $question["required"] == "true" ? 1 : 0,
-                "type" => $question["type"]
+                "index" => $question->index,
+                "statement" => $question->statement,
+                "required" => $question->required == "true" ? 1 : 0,
+                "type" => $question->type
             ]);
 
             $this->conn->execute();
 
-            if($question["type"] != "text"){
+            if($question->type != "text"){
 
                 $question_id = $this->conn->last_insert_id();
                 $this->conn->prepare("INSERT INTO myForm.boxOption (question_id, info, describe_allowed) values('$question_id', :info, :describeAllowed)");
-                foreach($question["options"] as $option)
+                foreach($question->options as $option)
                 {
 
                     $this->conn->bind([
-                        "info" => $option["info"],
-                        "describeAllowed" => $option["describe_allowed"] == "true" ? 1 : 0
+                        "info" => $option->info,
+                        "describeAllowed" => $option->describe_allowed == "true" ? 1 : 0
                     ]);
 
                     $this->conn->execute();

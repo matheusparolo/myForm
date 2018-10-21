@@ -10,25 +10,18 @@ use TCC\Models\Models\UserModel;
 
 class AuthController{
 
-    public function getLogin():void
+    public function index():void
     {
 
-        new PageMaker("auth", ["login"]);
+        new PageMaker("user/auth");
 
     }
+
 
     public function postLogin():void
     {
 
         UserModel::login($_POST["email"], $_POST["password"]);
-
-    }
-
-
-    public function getRegister():void
-    {
-
-        new PageMaker("auth", ["register"]);
 
     }
 

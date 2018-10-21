@@ -14,9 +14,10 @@ class UserController{
     {
 
         $user = UserModel::find_by_id($_SESSION[UserModel::SESSION], ["id", "name", "email"]);
-        new PageMaker("user", ["update" => ["user" => $user]]);
+        new PageMaker("user/update", ["user" => $user]);
 
     }
+
 
     public function postUpdate():void
     {
@@ -30,7 +31,7 @@ class UserController{
     {
 
         $user = new UserModel();
-        $user->update_password($_SESSION[UserModel::SESSION], $_POST["oldPassword"], $_POST["newPassword"]);
+        $user->update_password($_SESSION[UserModel::SESSION], $_POST["old-password"], $_POST["new-password"]);
 
     }
 
@@ -38,7 +39,7 @@ class UserController{
     public function getSearchUser($req, $res, $args):void
     {
 
-        UserModel::find_all_by_name_like($_SESSION[UserModel::SESSION], $args["name"]);
+        UserModel::find_all_by_name_like($_SESSION[UserModel::SESSION], $args["name"], true);
 
     }
 

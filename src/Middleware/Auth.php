@@ -19,7 +19,7 @@ class Auth{
             $method = $request->getMethod();
             if($method == "GET"){
 
-                header("location: /entrar");
+                header("location: /usuario");
                 exit;
 
             }else App::action_response(300);

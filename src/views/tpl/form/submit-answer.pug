@@ -1,0 +1,22 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/global/switch.css')
+    link(rel='stylesheet', href='/assets/css/form/submit-answer.css')
+
+block scripts
+    script(src='/assets/js/form/submit-answer.js')
+
+block content
+    .col-12.col-card
+        form#form-add.card(action='javascript:')
+            input#form-id(type="hidden", value=formID, name="id")
+            .card-header
+            .card-body
+                .pl-1
+                    p#form-name.card-title
+                #questions
+
+            .card-footer
+                .form-group.pt-3
+                    input.btn.btn-primary.btn-block(type='submit', value='Enviar')

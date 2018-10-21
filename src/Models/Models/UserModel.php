@@ -27,17 +27,12 @@ class UserModel{
     public function update(int $id, string $name, string $email):void
     {
 
-        if(self::email_exists($email)){
-
-            $this->userDAO->update($id, $name, $email);
-
-            App::action_response("000");
-
-        }else{
-
+        if(self::find_by_id($id, ["email"])->getEmail() != $email && self::email_exists($email))
             App::action_response("100");
 
-        }
+
+        $this->userDAO->update($id, $name, $email);
+        App::action_response("000");
 
     }
 
@@ -152,11 +147,11 @@ class UserModel{
 
     }
 
-    public static function find_all_by_name_like(int $id, string $name):void
+    public static function find_all_by_name_like(int $id, string $name, bool $returnArray = false):void
     {
 
         $userDAO = new UserDAO();
-        echo json_encode($userDAO->find_all_by_name_like($id, $name));
+        echo json_encode($userDAO->find_all_by_name_like($id, $name, $returnArray));
 
     }
 

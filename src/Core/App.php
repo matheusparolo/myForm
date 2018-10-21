@@ -51,6 +51,10 @@ class App extends \Slim\App{
     {
 
         $env = getenv($var);
+
+        $env = ((string)$env == "true") ? true : $env;
+        $env = ((string)$env == "false") ? false : $env;
+
         return $env ? $env : $default;
 
     }

@@ -170,8 +170,20 @@ class Connector{
 
         }
 
-        if(App::env("dbDebug", false)) exit(json_encode($e));
-        else App::action_response("200");
+        if(App::env("dbDebug", false)){
+
+            exit(json_encode($e));
+
+        }
+        else{
+
+            if($_SERVER["REQUEST_METHOD"] == "GET")
+                header("location: /erro");
+            else
+                App::action_response("200");
+            exit;
+
+        }
 
     }
 

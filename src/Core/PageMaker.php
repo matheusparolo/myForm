@@ -5,69 +5,31 @@
 
 namespace TCC\Core;
 
-use Rain\Tpl;
+use Pug\Pug;
 
 class PageMaker{
 
-    private $tpl;
-    private $options;
-    private $defaults = [
-        "header" => "templates/header",
-        "footer" => "templates/footer",
-        "data" => []
-    ];
-
-    public function __construct(String $path = "", array $views = [], array $options = [])
+    public function __construct(string $path = "", array $data = [], array $options = [])
     {
 
-        if($path[strlen($path) - 1]) $path .= "/";
+        $path = explode("/", $path);
+        $file = $path[count($path) - 1];
+        $path = join("/", array_slice($path, 0, count($path) - 1));
 
-        $this->options = array_merge($this->defaults, $options);
+        $defaultData = [
+            "pageTitle" => App::env("appName", "Titulo")
+        ];
 
-        $header = $this->options["header"];
-        $footer = $this->options["footer"];
+        $defaultOptions = [
+            "cache"   => "../src/views/cache/" . $path . "/" . $file,
+            "basedir" => "../src/views/tpl/"   . $path . "/",
+        ];
 
+        $data = array_merge($defaultData, $data);
+        $options = array_merge($defaultOptions, $options);
 
-        Tpl::configure([
-            "tpl_dir" => "../src/views/tpl/",
-            "cache_dir" => "../src/views/cache/" . $path . "/",
-            "debug" => App::env("rainTPLDebug", false)
-        ]);
-
-        $this->tpl = new Tpl;
-
-        if($header) $this->setTpl($header, $this->options["data"]);
-
-        foreach($views as $view => $data)
-        {
-            if(gettype($view) == "integer"){
-                $view = $data;
-                $data = [];
-            }
-            $this->setTpl($path . $view, $data);
-        }
-
-        if($footer) $this->setTpl($footer, $this->options["data"]);
-
-    }
-
-    public function setTpl(String $name, array $data = [], $return = false):void
-    {
-
-        $this->setData($data);
-        $this->tpl->draw($name, $return);
-
-    }
-
-    private function setData(array $data = []):array
-    {
-
-        foreach($data as $key => $value){
-
-            $this->tpl->assign($key, $value);
-
-        }
-        return $data;
+        $pug = new Pug($options);
+        $pug->displayFile((strpos($file, ".pug") ? $file : $file . ".pug"), $data);
 
     }
 

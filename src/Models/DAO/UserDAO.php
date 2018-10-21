@@ -78,13 +78,19 @@ class UserDAO{
 
     }
 
-    public function find_all_by_name_like(int $id, string $name):array
+    public function find_all_by_name_like(int $id, string $name, bool $returnArray):array
     {
 
-        return $this->conn->select("select id, name, email from myForm.user where name like CONCAT('%',:name,'%') and id != :id", [
+        $data =  $this->conn->select("select id, name, email from myForm.user where name like CONCAT('%',:name,'%') and id != :id", [
             "id" => $id,
             "name" => $name
         ]);
+
+        if(!$returnArray)
+            foreach($data as &$line)
+                $line = new GenericEntity($line);
+
+        return $data;
 
     }
 

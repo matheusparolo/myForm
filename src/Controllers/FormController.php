@@ -15,7 +15,7 @@ class FormController
     {
 
         $form = FormModel::find_by_id($args["id"], ["id", "name"]);
-        new PageMaker("form", ["index" => ["form" => $form]]);
+        new PageMaker("form/index",  ["form" => $form]);
 
     }
 
@@ -23,7 +23,7 @@ class FormController
     public function getCreate($req, $res, $args):void
     {
 
-        new PageMaker("form", ["create" => ["researchID" => $args["researchID"]]]);
+        new PageMaker("form/create", ["researchId" => $args["research-id"]]);
 
     }
 
@@ -31,7 +31,7 @@ class FormController
     {
 
         $form = new FormModel();
-        $form->create($_POST["researchID"], $_POST["name"], $_POST["questions"]);
+        $form->create($_POST["research-id"], $_POST["name"], json_decode($_POST["questions"]));
 
     }
 
@@ -39,7 +39,8 @@ class FormController
     public function getUpdate($req, $res, $args):void
     {
 
-        new PageMaker("form", ["update" => ["formID" => $args["id"]]]);
+        $researchID = FormModel::find_by_id($args["id"], ["research_id"])->getResearchID();
+        new PageMaker("form/update", ["formID" => $args["id"], "researchID" => $researchID]);
 
     }
 
@@ -47,7 +48,7 @@ class FormController
     {
 
         $form = new FormModel();
-        $form->update($_POST["id"], $_POST["name"], $_POST["questions"]);
+        $form->update($_POST["id"], $_POST["name"], json_decode($_POST["questions"]));
 
     }
 
@@ -70,56 +71,6 @@ class FormController
 
         $form = new FormModel();
         $form->delete($_POST["id"]);
-
-    }
-
-
-
-    public function getResults($req,$res,$args):void
-    {
-
-        $results = FormModel::get_results($args["id"]);
-
-        new PageMaker("form", ["results" => ["results" => $results]]);
-
-
-    }
-
-
-    public function getAnswer($req, $res, $args):void
-    {
-
-        $form = FormModel::find_by_id($args["id"], ["id", "name"]);
-        $questions = FormModel::find_questions($args["id"]);
-
-        new PageMaker("form", ["answer" => ["form" => $form, "questions" => $questions]]);
-
-    }
-
-    public function getAnswerByIndex($req, $res, $args)
-    {
-
-        $answers = FormModel::find_answer_by_index($args["id"], $args["answerIndex"]);
-        exit(json_encode($answers));
-
-    }
-
-
-    public function getAddAnswer($req, $res, $args):void
-    {
-
-        $form = FormModel::find_by_id($args["id"], ["id", "name"]);
-        $questions = FormModel::find_questions($args["id"]);
-
-        new PageMaker("form", ["submit-answer" => ["form" => $form, "questions" => $questions]]);
-
-    }
-
-    public function postAddAnswer():void
-    {
-
-        $form = new FormModel();
-        $form->add_answer($_POST["id"], $_POST["answers"]);
 
     }
 

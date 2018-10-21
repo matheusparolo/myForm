@@ -50,27 +50,35 @@ class ResearchModel{
     }
 
 
-    public static function find_by_id(int $id, array $columns = ["*"]):GenericEntity
+    public static function find_by_id(int $id, array $columns = ["*"], bool $returnArray = false)
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_by_id($id, $columns);
+        return $researchDAO->find_by_id($id, $columns, $returnArray);
 
     }
 
-    public static function find_members(int $id, int $userID):array
+    public static function find_creator(int $id, array $columns = ["*"], bool $returnArray = false)
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_members($id, $userID);
+        return $researchDAO->find_creator($id, $columns, $returnArray);
 
     }
 
-    public static function find_all_by_user_id(int $userID):array
+    public static function find_members(int $id, int $userID, bool $returnArray = false):array
     {
 
         $researchDAO = new ResearchDAO();
-        return $researchDAO->find_all_by_user_id($userID);
+        return $researchDAO->find_members($id, $userID, $returnArray);
+
+    }
+
+    public static function find_all_by_user_id(int $userID, bool $returnArray = false):array
+    {
+
+        $researchDAO = new ResearchDAO();
+        return $researchDAO->find_all_by_user_id($userID, $returnArray);
 
     }
 

@@ -1,0 +1,30 @@
+extends ../templates/baseLogged
+
+block links
+    link(rel='stylesheet', href='/assets/css/global/switch.css')
+    link(rel='stylesheet', href='/assets/css/global/table.css')
+    link(rel='stylesheet', href='/assets/css/form/create.css')
+
+block scripts
+    script(src="/assets/js/form/update.js")
+
+block content
+    .col-12.col-card
+        form#form-update.card(action='javascript:')
+            input#form-id(type='hidden', value=formID, name="id")
+            input#research-id(type='hidden', value=researchID)
+            .card-header Edição de Formulário
+            .card-body
+
+                .input-group.mb-3
+                    input#name.form-control(type='text', placeholder='Nome do formulário', name="name",data-required="1")
+
+                .questions-init.mb-3
+                    .pl-1.pt-1
+                        h1 Questões
+
+                #questions
+
+            .card-footer
+                .form-group.pt-3
+                    input.btn.btn-primary.btn-block(type='submit', value='Editar')

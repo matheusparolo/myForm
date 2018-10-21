@@ -71,7 +71,7 @@ class ResearchDAO{
     }
 
 
-    public function find_by_id(int $id, array $columns = ["*"]):GenericEntity
+    public function find_by_id(int $id, array $columns = ["*"], bool $returnArray = false)
     {
 
         $data = $this->conn->select("select " . join(",", $columns) . " from research where id = :id",
@@ -79,15 +79,38 @@ class ResearchDAO{
                 "id" => $id
             ]);
 
-        return new GenericEntity(!empty($data) ? $data[0] : []);
+        if(!$returnArray){
+            return new GenericEntity(!empty($data) ? $data[0] : []);
+        }else{
+            return !empty($data) ? $data[0] : [];
+        }
 
     }
 
-    public function find_all_by_user_id(int $userID):array
+    public function find_creator(int $id, array $columns = ["*"], bool $returnArray = false)
+    {
+
+        $data = $this->conn->select(
+            "select " . join(",", $columns) . " from research
+            inner join user on research.creator_id = user.id
+             where research.id = :id",
+            [
+                "id" => $id
+            ]);
+
+        if(!$returnArray){
+            return new GenericEntity(!empty($data) ? $data[0] : []);
+        }else{
+            return !empty($data) ? $data[0] : [];
+        }
+
+    }
+
+    public function find_all_by_user_id(int $userID, bool $returnArray):array
     {
 
         $researches = $this->conn->select(
-            "select research.id, research.creator_id, research.name, user.name as creator_name
+            "select research.id, research.creator_id, research.name, user.name as creator_name, research.application_area
              from myForm.researchers
              inner join myForm.research on research.id = researchers.research_id
              inner join myForm.user on user.id = research.creator_id
@@ -100,16 +123,41 @@ class ResearchDAO{
         foreach($researches as $line)
         {
 
-            $research = new GenericEntity([
-                "id" => $line["id"],
-                "name" => $line["name"],
-                "creatorId" => $line["creator_id"]
-            ]);
+            if(!$returnArray){
+                array_push($return, [
+                    "researchEntity" => new GenericEntity([
 
-            array_push($return, [
-                "researchEntity" => $research,
-                "creator_name" => $line["creator_name"]
-            ]);
+                        "id" => $line["id"],
+                        "name" => $line["name"],
+                        "creatorId" => $line["creator_id"],
+                        "applicationArea" => $line["application_area"]
+
+                    ]),
+                    "userEntity" => new GenericEntity([
+
+                        "name" => $line["creator_name"]
+
+                    ])
+                ]);
+            }else{
+
+                array_push($return, [
+                    "research" => [
+
+                        "id" => $line["id"],
+                        "name" => $line["name"],
+                        "creatorId" => $line["creator_id"],
+                        "applicationArea" => $line["application_area"]
+
+                    ],
+                    "user" => [
+
+                        "name" => $line["creator_name"]
+
+                    ]
+                ]);
+
+            }
 
         }
 
@@ -129,7 +177,7 @@ class ResearchDAO{
 
     }
 
-    public function find_members(int $researchID, int $userID):array
+    public function find_members(int $researchID, int $userID, bool $returnArray = false):array
     {
 
         $users = $this->conn->select(
@@ -141,14 +189,11 @@ class ResearchDAO{
                 "userID" => $userID
             ]);
 
-        $return = [];
-        foreach($users as $user)
-        {
+        if(!$returnArray)
+            foreach($users as &$user)
+                $user = new GenericEntity($user);
 
-            array_push($return, new GenericEntity($user));
-
-        }
-        return $return;
+        return $users;
 
     }
 

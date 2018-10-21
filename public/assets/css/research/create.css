@@ -1,0 +1,26 @@
+#search{
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    cursor: initial;
+}
+
+#search .card{
+    max-height: 60vh;
+    overflow: auto;
+}
+
+#search input, #search button{
+    border-radius: 0;
+}
+
+#search button{
+    background-color: #fff;
+    background-clip: padding-box;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    border: 1px solid #ced4da;
+}
+
+#close-search{
+    font-size: 1.7rem;
+}
