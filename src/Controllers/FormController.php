@@ -11,15 +11,6 @@ use TCC\Models\Models\FormModel;
 class FormController
 {
 
-    public function index($req, $res, $args):void
-    {
-
-        $form = FormModel::find_by_id($args["id"], ["id", "name"]);
-        new PageMaker("form/index",  ["form" => $form]);
-
-    }
-
-
     public function getCreate($req, $res, $args):void
     {
 

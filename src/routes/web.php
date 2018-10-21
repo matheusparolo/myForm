@@ -77,12 +77,9 @@ $this->group('/formulario', function (){
 
         $this->group("{id}", function(){
 
-            $this->get("", "\TCC\Controllers\FormController:index");
-
             $this->get("/json", "\TCC\Controllers\FormController:getFormJSON");
 
             $this->get("/editar", "\TCC\Controllers\FormController:getUpdate");
-            $this->get("/resposta", "\TCC\Controllers\AnswerController:getAnswer");
             $this->get("/resposta/enviar", "\TCC\Controllers\AnswerController:getAddAnswer");
             $this->get("/resposta/{answerIndex}", "\TCC\Controllers\AnswerController:getAnswerByIndex");
 
