@@ -36,6 +36,8 @@ function verifyRequireds(form){
                 input.removeAttr("title").tooltip("hide").tooltip("disable");
             }, 3000);
 
+            $('html, body').animate({scrollTop: $(input).offset().top - 80}, 250);
+
             toReturn = false;
             break;
 
