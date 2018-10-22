@@ -10,6 +10,9 @@ function insert_researches(data){
         let research = researchData["research"];
         let user = researchData["user"];
 
+        a = userID;
+        b = research["creatorId"];
+
         tableResearches
             .append($("<tr>")
 
@@ -56,7 +59,7 @@ function insert_researches(data){
                     .addClass("action-i")
                     .append($("<a>")
 
-                        .css({"display" : (userID === research["creatorId"] ? "block" : "none")})
+                        .css({"display" : (userID == research["creatorId"] ? "block" : "none")})
                         .attr("href", "/pesquisa/" + research["id"] + "/editar")
                         .append($("<img>")
                             .attr("src", "/assets/media/img/icons/edit.png")
@@ -72,7 +75,7 @@ function insert_researches(data){
                     .addClass("action-i")
                     .append($("<span>")
 
-                        .css({"display" : (userID === research["creatorId"] ? "block" : "none")})
+                        .css({"display" : (userID == research["creatorId"] ? "block" : "none")})
                         .append($("<img>")
                             .attr("src", "/assets/media/img/icons/delete.png")
                             .attr("title", "Remover")

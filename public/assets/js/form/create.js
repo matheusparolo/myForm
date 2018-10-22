@@ -82,7 +82,7 @@ function drop_question(){
     {
 
         questions[i]["index"] = parseInt(i);
-        $(questionsHtml[i]).find(".index-question").prop("value", parseInt(i) + 1);
+        $(questionsHtml[i]).find(".question-index").prop("value", parseInt(i) + 1);
         $(questionsHtml[i]).attr("data-index", parseInt(i));
 
     }
