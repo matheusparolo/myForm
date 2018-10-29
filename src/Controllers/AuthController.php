@@ -28,7 +28,7 @@ class AuthController{
     public function postRegister():void
     {
 
-        UserModel::register($_POST["name"], $_POST["email"], $_POST["password"]);
+        UserModel::register($_POST["name"], $_POST["email"], $_POST["registerPassword"]);
 
     }
 

@@ -25,3 +25,36 @@
 {
     cursor: pointer;
 }
+
+.mic
+{
+
+    background-color: rgba(0,0,0,0.8);
+    border-radius: 50%;
+    padding: 0.7rem;
+    width: 50px !important;
+    cursor: pointer;
+    float: left;
+    margin-right: 1rem;
+    margin-top: 0.2rem;
+    transition-duration: 0.05s;
+
+}
+.mic.recording
+{
+
+    width: 60px !important;
+    margin-top: 0;
+
+}
+
+.status
+{
+    float: left;
+}
+.recorder::after
+{
+    clear: both;
+    content: '';
+    display: table;
+}

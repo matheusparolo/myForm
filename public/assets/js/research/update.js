@@ -1,18 +1,21 @@
-function change_status_search_member(){
+// Submits
+function submit_update(){
 
-    ($(this).attr("id") === "search-member") ? $("#search").show() : $("#search").hide();
-
+    $("#form-update").submitter("/pesquisa/editar", {
+        data : {
+            "members" : members
+        }
+    });
 }
 
-
+// Members Actions
 function new_member(){
 
     let userID = search_parent_attr(this, "data-userid");
-    add_member(userID);
+    insert_member(userID);
 
 }
-
-function add_member(userID){
+function insert_member(userID){
 
     if(members.indexOf(userID) === -1){
 
@@ -26,11 +29,10 @@ function add_member(userID){
                 .append($("<td>").text(user["name"]))
                 .append($("<td>").text(user["email"]))
                 .append($("<td>")
-                    .addClass("action-i")
+                    .addClass("action")
                     .append($("<img>")
                         .attr("title", "Remover membro")
                         .attr("src", "/assets/media/img/icons/delete.png")
-                        .tooltip({"placement" : "bottom"})
                         .on("click", remove_member)
                     )
                 )
@@ -40,7 +42,6 @@ function add_member(userID){
     }
 
 }
-
 function remove_member(){
 
     let userid = search_parent_attr(this, "data-userid");
@@ -49,6 +50,45 @@ function remove_member(){
 
 }
 
+// Users searchs
+function insert_users(data){
+
+    users = [];
+    let tableUsers = $("#table-users");
+    tableUsers.html("");
+
+    if(data.length > 0)
+    {
+
+        data.forEach(function(user){
+
+            users[user["id"]] = user;
+            tableUsers
+                .append($("<tr>")
+
+                    .attr("data-userid", user["id"])
+                    .append($("<td>")
+                        .text(user["name"])
+                    )
+                    .append($("<td>")
+                        .text(user["email"])
+                    )
+                    .append($("<td>")
+                        .addClass("action")
+                        .append($("<img>")
+                            .attr("title", "Adicionar como membro")
+                            .attr("src", "/assets/media/img/icons/add-person.png")
+                            .on("click", new_member)
+                        )
+                    )
+
+                )
+
+        });
+
+    }
+
+}
 function search_user(){
 
     let val = $("#input-search").val();
@@ -57,97 +97,66 @@ function search_user(){
 
         let btn = this;
         change_disabled(btn, true);
-        insert_loading();
 
-        getData("/usuario/buscar/" + val, null, function(data){
-
-            users = [];
-            if(data.length > 0)
-            {
-
-                let tableUsers = $("#table-users");
-                tableUsers.html("");
-
-                data.forEach(function(user){
-
-                    users[user["id"]] = user;
-                    tableUsers
-                        .append($("<tr>")
-
-                            .attr("data-userid", user["id"])
-                            .append($("<td>")
-                                .text(user["name"])
-                            )
-                            .append($("<td>")
-                                .text(user["email"])
-                            )
-                            .append($("<td>")
-                                .addClass("action-i")
-                                .append($("<img>")
-                                    .attr("title", "Adicionar como membro")
-                                    .attr("src", "/assets/media/img/icons/add-person.png")
-                                    .tooltip({"placement" : "bottom"})
-                                    .on("click", new_member)
-                                )
-                            )
-
-                        )
-
-                });
-
-
-            }
-
+        getJSON("/usuario/buscar/" + val, function(data){
+            insert_users(data);
             change_disabled(btn, false);
-            remove_loading();
-
         })
 
     }
 
 }
 
-function submit_update(){
+// Main
+function init_vars(){
 
-    submit_form("#form-update", "/pesquisa/editar", [{"name" : "members", "value" : members}]);
+    responseCodes["000"] = "/pesquisas";
+    members = [];
+
+}
+function get_data(){
+
+    getJSON("/pesquisa/" + $("#id").val() + "/editar/json", function(data){
+
+        users = [];
+
+        let research = data["research"];
+        let members = data["members"];
+        let areas = data["areas"];
+
+        $("#name").val(research["name"]);
+        $("#area").val(research["application_area"]);
+        $("#overview").val(research["overview"]);
+        $("#terms").val(research["terms"]);
+
+        areas.forEach(function(area){
+
+            $("#list-areas").append($("<option>").text(area))
+
+        });
+
+        members.forEach(function(member){
+
+            users[member["id"]] = member;
+            insert_member(member["id"]);
+
+        })
+
+    });
+
+}
+function binds(){
+
+    $("#form-update").on("submit", submit_update);
+    $("#btn-search").on("click", search_user);
 
 }
 
 function main(){
 
-    responseCodes["000"] = "/pesquisa";
-
-    members = [];
-
-    $("#search-member, #close-search").on("click", change_status_search_member);
-    $(".action-i img, .action-t").tooltip({
-        enable : true,
-        placement: "bottom"
-    });
-
-    $("#form-update").on("submit", submit_update);
-
-    $("#btn-search").on("click", search_user);
-
-    getData("/pesquisa/" + $("#id").val() + "/editar/json", null, function(data){
-
-        let research = data["research"];
-        let members = data["members"];
-
-        $("#name").val(research["name"]);
-        $("#area").val(research["application_area"]);
-        $("#overview").val(research["overview"]);
-
-        users = [];
-
-        members.forEach(function(member){
-
-            users[member["id"]] = member;
-            add_member(member["id"]);
-
-        })
-
-    });
+    init_vars();
+    get_data();
+    binds();
 
 }
 

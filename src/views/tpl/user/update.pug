@@ -10,8 +10,8 @@ block content
 
     div.col-12.col-md-6.col-card
 
-        // Form infos
-        form#form-infos.card(action='javascript:')
+        // Form info
+        form#form-info.card(action='javascript:')
             div.card-header Editar Informações
             div.card-body
 
@@ -19,13 +19,13 @@ block content
                     div.input-group-prepend
                         span.input-group-text
                             img(src='/assets/media/img/icons/identity.png')
-                    input.form-control(type='text', name='name', placeholder='Nome', value=$user->getName(), data-required='1')
+                    input#name.form-control(type='text', name='name', placeholder='Nome', required)
 
                 div.input-group.mb-3
                     .input-group-prepend
                         span.input-group-text
                             img(src='/assets/media/img/icons/email.png')
-                    input.form-control(type='email', name='email', placeholder='Email', value=$user->getEmail(), data-required='1')
+                    input#email.form-control(type='email', name='email', placeholder='Email', required)
 
             div.card-footer.pb-0
                 div.form-group
@@ -42,8 +42,8 @@ block content
                     div.input-group-prepend
                         span.input-group-text
                             img(src='/assets/media/img/icons/password.png')
-                    input.form-control(type='password', name='old-password', placeholder='Senha atual', data-required='1')
-                    div.input-group-append(title='Mostrar Senha')
+                    input#old-password.form-control(type='password', name='oldPassword', placeholder='Senha atual', required)
+                    div.input-group-append.showPassword(title='Mostrar Senha', data-toggle="password", data-target="#old-password")
                         span.input-group-text
                             img(src='/assets/media/img/icons/closed_eye.png')
 
@@ -51,8 +51,8 @@ block content
                     div.input-group-prepend
                         span.input-group-text
                             img(src='/assets/media/img/icons/password.png')
-                    input.form-control(type='password', name='new-password', placeholder='Nova senha', data-required='1')
-                    div.input-group-append(title='Mostrar Senha')
+                    input#new-password.form-control(type='password', name='newPassword', placeholder='Nova senha', required)
+                    div.input-group-append.showPassword(title='Mostrar Senha', data-toggle="password", data-target="#new-password")
                         span.input-group-text
                             img(src='/assets/media/img/icons/closed_eye.png')
 
@@ -60,8 +60,8 @@ block content
                     div.input-group-prepend
                         span.input-group-text
                             img(src='/assets/media/img/icons/password.png')
-                    input.form-control(type='password', name='confirm-new-password', placeholder='Confirmar senha', data-required='1')
-                    div.input-group-append(title='Mostrar Senha')
+                    input#confirm-new-password.form-control(type='password', name='confirmNewPassword', placeholder='Confirmar senha', required)
+                    div.input-group-append(title='Mostrar Senha', data-toggle="password", data-target="#confirm-new-password")
                         span.input-group-text
                             img(src='/assets/media/img/icons/closed_eye.png')
 

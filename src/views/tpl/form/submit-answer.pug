@@ -5,13 +5,14 @@ block links
     link(rel='stylesheet', href='/assets/css/form/submit-answer.css')
 
 block scripts
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.11/jquery.mask.min.js')
     script(src='/assets/js/form/submit-answer.js')
 
 block content
     .col-12.col-card
         form#form-add.card(action='javascript:')
             input#form-id(type="hidden", value=formID, name="id")
-            .card-header
+            .card-header Enviar Respostas
             .card-body
                 .pl-1
                     p#form-name.card-title
@@ -20,3 +21,26 @@ block content
             .card-footer
                 .form-group.pt-3
                     input.btn.btn-primary.btn-block(type='submit', value='Enviar')
+
+
+    .modal#modal-terms
+        .modal-dialog()
+            form#form-terms.modal-content(action="javascript:")
+                .modal-header
+                    h5.modal-title Termos de Concessão
+                    button.close(data-dismiss='modal')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    textarea#terms.text-justify.form-control(rows="10", disabled=true)
+                        | Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque feugiat in lacus malesuada posuere. Sed ac fermentum diam. Proin faucibus non neque in cursus. Duis efficitur ex at tempor rutrum. Ut lacinia quam libero, at semper nulla aliquet sit amet. Fusce augue orci, finibus id augue vitae, sollicitudin ornare nisl. Quisque gravida enim ut dolor ultricies, sit amet blandit nunc lobortis. Nulla volutpat ut neque nec vestibulum. Duis gravida turpis a ipsum interdum feugiat. Sed porta justo lectus, in rutrum leo congue eu. Integer commodo ipsum at mi elementum, quis commodo felis consectetur.
+                        | Etiam ultrices lectus et erat aliquam, sed luctus elit accumsan. Quisque tincidunt neque nec leo imperdiet faucibus. Aliquam est ex, vestibulum a mollis vel, volutpat quis enim. Nunc auctor odio maximus feugiat semper. Donec auctor massa nisl. Praesent a ullamcorper elit, non euismod orci. Sed eu tincidunt lectus. Quisque elementum pellentesque eros, in bibendum enim eleifend rutrum. Cras fermentum lorem eget arcu imperdiet hendrerit. Proin malesuada nunc mauris, eget sagittis magna condimentum quis. Etiam pharetra velit id tellus eleifend porta. Duis gravida id quam ac feugiat. Ut blandit vitae dolor sit amet dignissim. Ut luctus luctus ante. Sed pellentesque nisi vel nisl pretium ultricies. Ut ut sem bibendum, vestibulum ipsum sit amet, malesuada velit.
+                        | Nam lorem ipsum, iaculis vel velit eget, consequat rutrum justo. Curabitur non accumsan ante. Suspendisse varius massa in nunc tempor finibus. Etiam in enim ullamcorper, dignissim nisi ac, porta elit. Quisque eu orci sagittis, tristique enim in, convallis nisl. Nulla fringilla risus nisl, vel maximus augue blandit eu. Aliquam in malesuada libero. Integer fringilla pharetra convallis. Proin lacinia purus ut enim mollis aliquet. Mauris ut nulla ante. Maecenas a malesuada sapien, nec laoreet ex. Pellentesque dolor orci, tempus vel nisi vel, imperdiet accumsan lacus. Curabitur eu libero ligula. Ut eu pharetra mauris, nec lacinia neque. Maecenas eleifend neque sit amet nibh convallis, at congue tellus pharetra. Sed quis posuere erat.
+                        | Fusce ultrices tristique enim, in molestie tellus. Donec tellus urna, ornare a placerat sit amet, mattis at massa. Vivamus ut purus a risus dictum elementum sit amet in nunc. Nam a lorem nec lacus porta fermentum sed sed lorem. Vivamus in lorem dictum, euismod nunc vel, pulvinar urna. Aenean euismod eleifend urna a bibendum. Suspendisse viverra a ipsum at placerat. Cras accumsan purus eget mi accumsan varius. Donec vehicula luctus interdum. Aenean dui elit, sodales nec laoreet id, rutrum vitae neque. Maecenas vel ligula cursus, blandit mi vitae, mattis dolor. Fusce consequat vestibulum tellus, nec hendrerit tellus eleifend ac. Vestibulum malesuada et orci non vehicula.
+                        | Aenean eros erat, dictum sit amet ultrices non, porttitor eget ipsum. Quisque mollis risus quis felis consectetur fringilla. Suspendisse mattis non sapien eu finibus. Donec id consequat nisi, consequat tristique ex. Duis quis erat leo. Aliquam bibendum magna libero. Vivamus commodo dui quis luctus faucibus. Cras fermentum in velit eget eleifend. Nullam nec sodales velit. Aenean a ligula ac libero varius tempus at et leo. Proin est nulla, aliquet at eleifend ac, volutpat at est. Cras sed odio tellus. Pellentesque tristique leo id risus venenatis, varius feugiat erat vulputate. Ut et dolor scelerisque, aliquam mi ut, rhoncus ipsum.
+                    .custom-control.custom-checkbox.mt-3
+                        input#accept-terms.custom-control-input(type="checkbox", required)
+                        label.custom-control-label(for="accept-terms") Li e aceito os termos descritos acima.
+                    .input-group
+                        input#cpf.form-control.mt-1(placeholder="CPF", autocomplete="off", required)
+                .modal-footer
+                    input#confirm.btn.btn-primary.btn-block(type='submit', value='Confirmar')

@@ -177,11 +177,15 @@ class Connector{
         }
         else{
 
-            if($_SERVER["REQUEST_METHOD"] == "GET")
-                header("location: /erro");
-            else
-                App::action_response("200");
-            exit;
+            App::response_type([
+                "html" => function(){
+                    header("location: /erro");
+                    exit;
+                },
+                "json" => function(){
+                    App::code_json_response("200");
+                }
+            ]);
 
         }
 

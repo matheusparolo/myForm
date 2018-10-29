@@ -15,13 +15,14 @@ block content
                 .input-group
                     input#show-results.btn.btn-secondary.form-control(type='button', value='Resultados')
                     input#show-answers.btn.btn-secondary.form-control(type='button', value='Respostas Individuais')
-            #answers.card-body.mb-4(style="display:none")
+            form#form-answers.card-body.mb-4(style="display:none", action="javascript:")
                 .pl-1.mb-4
                     p.card-title=formName
                     p.card-subtitle
                         | Resposta de indice
                         span#answer-index
                 #questions
+                input.float-right.mt-3.btn.btn-primary(type="submit", value="Salvar transcrição das respostas")
 
             #results-card.card-body.mb-4
                 .pl-1.mb-4

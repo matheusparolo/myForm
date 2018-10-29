@@ -11,7 +11,7 @@ use TCC\Models\Entities\GenericEntity;
 
 class UserModel{
 
-    const SESSION = "userID";
+    const SESSION = "user";
 
     private $userDAO;
 
@@ -28,11 +28,11 @@ class UserModel{
     {
 
         if(self::find_by_id($id, ["email"])->getEmail() != $email && self::email_exists($email))
-            App::action_response("100");
+            App::code_json_response("100");
 
 
         $this->userDAO->update($id, $name, $email);
-        App::action_response("000");
+        App::code_json_response("000");
 
     }
 
@@ -41,13 +41,14 @@ class UserModel{
 
         if(self::verify_password($id, $oldPassword)){
 
+            $newPassword = password_hash($newPassword, PASSWORD_DEFAULT);
             $this->userDAO->update_password($id, $newPassword);
 
-            App::action_response("000");
+            App::code_json_response("000");
 
         }else{
 
-            App::action_response("100");
+            App::code_json_response("100");
 
         }
 
@@ -59,14 +60,18 @@ class UserModel{
 
         if(!self::email_exists($email)){
 
-            $userDAO = new UserDAO();
-            $_SESSION[self::SESSION] = $userDAO->create($name, $email, $password);
+            $password = password_hash($password, PASSWORD_DEFAULT);
 
-            App::action_response("000");
+            $userDAO = new UserDAO();
+            $user = $userDAO->create($name, $email, $password);
+
+            self::regenerate_session($user);
+
+            App::code_json_response("000");
 
         }else{
 
-            App::action_response("100");
+            App::code_json_response("100");
 
         }
 
@@ -79,23 +84,15 @@ class UserModel{
         $userDAO = new UserDAO();
         $user = $userDAO->find_by_email($email, ["id", "email", "password"]);
 
-        if(!$user->isEmpty()){
+        if(!$user->isEmpty() && password_verify($password, $user->getPassword())){
 
-            if($password == $user->getPassword()){
+            self::regenerate_session($user->getId());
 
-                $_SESSION[self::SESSION] = $user->getId();
-                App::action_response("000");
-
-            }else{
-
-                App::action_response("100");
-
-            }
-
+            App::code_json_response("000");
 
         }else{
 
-            App::action_response("100");
+            App::code_json_response("100");
 
         }
 
@@ -105,6 +102,8 @@ class UserModel{
     {
 
         session_destroy();
+        setcookie("token_1", "", 0, "/");
+        setcookie("token_2", "", 0, "/");
 
         header("location: /");
         exit;
@@ -127,14 +126,10 @@ class UserModel{
         $user = $userDAO->find_by_id($id, ["password"]);
 
         if(!$user->isEmpty())
-        {
+            return password_verify($password, $user->getPassword());
 
-            $userPassword = $user->getPassword();
-            return $userPassword == $password ? true : false;
-
-        }else{
+        else
             return false;
-        }
 
     }
 
@@ -152,6 +147,38 @@ class UserModel{
 
         $userDAO = new UserDAO();
         echo json_encode($userDAO->find_all_by_name_like($id, $name, $returnWithoutEntity));
+
+    }
+
+    public static function find_by_tokens(string $token1, string $token2, array $columns = ["*"]):GenericEntity
+    {
+
+        $userDAO = new UserDAO();
+        return $userDAO->find_by_tokens($token1, $token2, $columns);
+
+    }
+
+
+    public static function regenerate_session(int $userID):void
+    {
+
+        $userDAO = new UserDAO();
+        $token1 = bin2hex(random_bytes(32));
+        $token2 = bin2hex(random_bytes(32));
+
+        session_regenerate_id(true);
+
+        $_SESSION[UserModel::SESSION] = [
+            "id" => $userID,
+            "token_1" => $token1,
+            "token_2" => $token2,
+        ];
+
+        setcookie("token_1", $token1, time() + 60 * 60 * 24 * 365, "/");
+        setcookie("token_2", $token2, time() + 60 * 60 * 24 * 365, "/");
+
+        $userDAO->update_tokens($userID, $token1, $token2);
+
 
     }
 

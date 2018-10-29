@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "8472901e31f14908b79608606a9501ee",
-    "content-hash": "c0ba45a152817fa07df21bbebc6c1bb2",
+    "content-hash": "e207a83a5cd004d1844bb2cf96f84241",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -36,20 +35,20 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
-            "time": "2017-02-14 19:40:03"
+            "time": "2017-02-14T19:40:03+00:00"
         },
         {
             "name": "js-phpize/js-phpize",
-            "version": "2.3.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pug-php/js-phpize.git",
-                "reference": "3ee0fdf48eb472f50f39a1d346d0500c09017ad3"
+                "reference": "6c9c03face2fe508e9a7ebe4875a8cf4c527596e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pug-php/js-phpize/zipball/3ee0fdf48eb472f50f39a1d346d0500c09017ad3",
-                "reference": "3ee0fdf48eb472f50f39a1d346d0500c09017ad3",
+                "url": "https://api.github.com/repos/pug-php/js-phpize/zipball/6c9c03face2fe508e9a7ebe4875a8cf4c527596e",
+                "reference": "6c9c03face2fe508e9a7ebe4875a8cf4c527596e",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +76,7 @@
                 }
             ],
             "description": "Convert js-like syntax to standalone PHP code.",
-            "time": "2018-10-18 12:43:36"
+            "time": "2018-10-23T10:48:59+00:00"
         },
         {
             "name": "js-phpize/js-phpize-phug",
@@ -120,7 +119,7 @@
                 }
             ],
             "description": "Convert js-like syntax to standalone PHP code in Phug template.",
-            "time": "2018-06-10 16:49:22"
+            "time": "2018-06-10T16:49:22+00:00"
         },
         {
             "name": "js-transformer/js-transformer",
@@ -162,7 +161,7 @@
             "keywords": [
                 "js-transformer"
             ],
-            "time": "2017-10-27 21:27:00"
+            "time": "2017-10-27T21:27:00+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -208,7 +207,7 @@
                 "router",
                 "routing"
             ],
-            "time": "2018-02-13 20:26:39"
+            "time": "2018-02-13T20:26:39+00:00"
         },
         {
             "name": "nodejs-php-fallback/nodejs-php-fallback",
@@ -253,7 +252,73 @@
                 }
             ],
             "description": "Allow you to call node.js module or scripts throught PHP and call a fallback function if node.js is not available",
-            "time": "2018-04-05 14:25:31"
+            "time": "2018-04-05T14:25:31+00:00"
+        },
+        {
+            "name": "phpmailer/phpmailer",
+            "version": "v6.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPMailer/PHPMailer.git",
+                "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/cb3ea134d4d3729e7857737d5f320cce9caf4d32",
+                "reference": "cb3ea134d4d3729e7857737d5f320cce9caf4d32",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-filter": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "1.2.*",
+                "friendsofphp/php-cs-fixer": "^2.2",
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpunit/phpunit": "^4.8 || ^5.7",
+                "zendframework/zend-eventmanager": "3.0.*",
+                "zendframework/zend-i18n": "2.7.3",
+                "zendframework/zend-serializer": "2.7.*"
+            },
+            "suggest": {
+                "ext-mbstring": "Needed to send email in multibyte encoding charset",
+                "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
+                "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
+                "psr/log": "For optional PSR-3 debug logging",
+                "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
+                "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPMailer\\PHPMailer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "authors": [
+                {
+                    "name": "Jim Jagielski",
+                    "email": "jimjag@gmail.com"
+                },
+                {
+                    "name": "Marcus Bointon",
+                    "email": "phpmailer@synchromedia.co.uk"
+                },
+                {
+                    "name": "Andy Prevost",
+                    "email": "codeworxtech@users.sourceforge.net"
+                },
+                {
+                    "name": "Brent R. Matzelle"
+                }
+            ],
+            "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+            "time": "2018-03-27T13:49:45+00:00"
         },
         {
             "name": "phug/ast",
@@ -311,7 +376,7 @@
                 "template",
                 "views"
             ],
-            "time": "2016-12-28 16:34:09"
+            "time": "2016-12-28T16:34:09+00:00"
         },
         {
             "name": "phug/compiler",
@@ -371,7 +436,7 @@
                 "template",
                 "views"
             ],
-            "time": "2018-02-06 16:48:16"
+            "time": "2018-02-06T16:48:16+00:00"
         },
         {
             "name": "phug/dependency-injection",
@@ -429,7 +494,7 @@
                 "template",
                 "views"
             ],
-            "time": "2017-10-11 13:13:35"
+            "time": "2017-10-11T13:13:35+00:00"
         },
         {
             "name": "phug/event",
@@ -478,7 +543,7 @@
                 "event",
                 "phug"
             ],
-            "time": "2018-07-03 15:20:30"
+            "time": "2018-07-03T15:20:30+00:00"
         },
         {
             "name": "phug/formatter",
@@ -540,7 +605,7 @@
                 "template",
                 "views"
             ],
-            "time": "2018-06-10 13:06:39"
+            "time": "2018-06-10T13:06:39+00:00"
         },
         {
             "name": "phug/js-transformer-filter",
@@ -583,7 +648,7 @@
             "keywords": [
                 "js-transformer"
             ],
-            "time": "2018-02-09 07:58:41"
+            "time": "2018-02-09T07:58:41+00:00"
         },
         {
             "name": "phug/lexer",
@@ -644,7 +709,7 @@
                 "template",
                 "views"
             ],
-            "time": "2018-08-17 13:39:39"
+            "time": "2018-08-17T13:39:39+00:00"
         },
         {
             "name": "phug/parser",
@@ -705,7 +770,7 @@
                 "template",
                 "views"
             ],
-            "time": "2017-12-21 16:58:03"
+            "time": "2017-12-21T16:58:03+00:00"
         },
         {
             "name": "phug/phug",
@@ -766,7 +831,7 @@
                 "template",
                 "views"
             ],
-            "time": "2018-02-26 09:25:12"
+            "time": "2018-02-26T09:25:12+00:00"
         },
         {
             "name": "phug/reader",
@@ -822,7 +887,7 @@
                 "template",
                 "views"
             ],
-            "time": "2017-12-12 16:08:44"
+            "time": "2017-12-12T16:08:44+00:00"
         },
         {
             "name": "phug/renderer",
@@ -886,20 +951,20 @@
                 "template",
                 "views"
             ],
-            "time": "2018-07-05 13:44:16"
+            "time": "2018-07-05T13:44:16+00:00"
         },
         {
             "name": "phug/util",
-            "version": "0.4.15",
+            "version": "0.4.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phug-php/util.git",
-                "reference": "a52c5f8279bed9c0317be7055dec38b43311183c"
+                "reference": "50f2c389c185f9140dbb7409d8eacb6623ad68af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phug-php/util/zipball/a52c5f8279bed9c0317be7055dec38b43311183c",
-                "reference": "a52c5f8279bed9c0317be7055dec38b43311183c",
+                "url": "https://api.github.com/repos/phug-php/util/zipball/50f2c389c185f9140dbb7409d8eacb6623ad68af",
+                "reference": "50f2c389c185f9140dbb7409d8eacb6623ad68af",
                 "shasum": ""
             },
             "require": {
@@ -930,6 +995,7 @@
                     "homepage": "http://github.com/kylekatarnls"
                 }
             ],
+            "description": "Phug base utils, Pug (ex-Jade) for PHP, HTML template engine structured by indentation",
             "homepage": "http://phug-lang.com",
             "keywords": [
                 "dialect",
@@ -945,7 +1011,7 @@
                 "util",
                 "views"
             ],
-            "time": "2018-02-08 10:51:06"
+            "time": "2018-10-25T11:50:30+00:00"
         },
         {
             "name": "pimple/pimple",
@@ -995,7 +1061,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2018-01-21 07:42:36"
+            "time": "2018-01-21T07:42:36+00:00"
         },
         {
             "name": "psr/container",
@@ -1044,7 +1110,7 @@
                 "container-interop",
                 "psr"
             ],
-            "time": "2017-02-14 16:28:37"
+            "time": "2017-02-14T16:28:37+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1094,7 +1160,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06 14:39:51"
+            "time": "2016-08-06T14:39:51+00:00"
         },
         {
             "name": "pug-php/pug",
@@ -1268,7 +1334,7 @@
                 "pug",
                 "template"
             ],
-            "time": "2018-06-10 17:27:29"
+            "time": "2018-06-10T17:27:29+00:00"
         },
         {
             "name": "slim/slim",
@@ -1339,7 +1405,7 @@
                 "micro",
                 "router"
             ],
-            "time": "2018-09-16 10:54:21"
+            "time": "2018-09-16T10:54:21+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1398,7 +1464,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-08-06 14:22:27"
+            "time": "2018-08-06T14:22:27+00:00"
         },
         {
             "name": "symfony/polyfill-php72",
@@ -1453,7 +1519,7 @@
                 "portable",
                 "shim"
             ],
-            "time": "2018-08-06 14:22:27"
+            "time": "2018-08-06T14:22:27+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -1528,7 +1594,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2018-10-02 16:36:10"
+            "time": "2018-10-02T16:36:10+00:00"
         }
     ],
     "packages-dev": [],

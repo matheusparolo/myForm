@@ -1,5 +1,7 @@
 # MyForm
 
+## *NOTA: As informações abaixo estão parcialmente defasadas e precisam ser reescritas e mantidas em arquivos separados.*
+
 ## Instruções
 
 Para usar esse sistema em um servidor interno siga os passos:

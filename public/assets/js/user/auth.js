@@ -1,20 +1,22 @@
 // Submit
 function login(){
 
-    responseCodes["100"] = ["O email e/ou a senha utilizada são invalidos! ", "Verifique os dados informados e tente novamente."];
-    submit_form("#form-login", "/entrar")
+    responseCodes["100"] = ["O email e/ou a senha utilizada são invalidos!", "Verifique os dados informados e tente novamente."];
+    $("#form-login").submitter("/entrar")
 
 }
-
 function register(){
 
-    responseCodes["100"] = ["O email informado já está em uso! ", "Verifique os dados informados e tente novamente."];
-    submit_form("#form-register", "/cadastrar", [], true, function(data){
-        return verify_password_to_submit(data, "password")
-    })
+    responseCodes["100"] = ["O email informado já está em uso!", "Verifique os dados informados e tente novamente."];
+    $("#form-register").submitter("/cadastrar", {
+
+        callbackData: function(data){
+            return verify_password_to_submit(data["registerPassword"], data["confirmPassword"])
+        }
+
+    });
 
 }
-
 
 // Actions in HTML
 function move_form(){
@@ -41,17 +43,25 @@ function move_form(){
 
 }
 
-function main(){
+// Main
+function init_vars(){
 
-    // Response responseCodes
-    responseCodes["000"] = "/pesquisa";
-
-    // Bind Actions
-    $("#form-login").on("submit", login);
-    $("#form-register").on("submit", register);
-
-    $(".to-login, .to-register").on("click", move_form);
-    $(".input-group-append").on("click", change_password_view);
+    responseCodes["000"] = "/pesquisas";
 
 }
+function binds(){
+
+    $("#form-login").on("submit", login);
+    $("#form-register").on("submit", register);
+    $(".to-login, .to-register").on("click", move_form);
+
+}
+
+function main(){
+
+    init_vars();
+    binds();
+
+}
+
 window.onload = main;

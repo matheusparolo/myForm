@@ -1,27 +1,4 @@
-function change_password_view(){
-
-    let input = $(this).parent().find("input");
-
-    if(input.attr("type") === "text") {
-        input.attr("type", "password");
-        $(this).find("img").attr("title", "Mostrar Senha").attr("src", "/assets/media/img/icons/closed_eye.png");
-    }else{
-        input.attr("type", "text");
-        $(this).find("img").attr("title", "Esconder Senha").attr("src", "/assets/media/img/icons/eye.png");
-    }
-
-}
-function verify_password_to_submit(data, name){
-
-    let password, confirmPassword;
-
-    data.forEach(function(input){
-        if(input["name"] === name)
-            password = input["value"];
-
-        else if(input["name"] === "confirm-" + name)
-            confirmPassword = input["value"];
-    });
+function verify_password_to_submit(password, confirmPassword){
 
     if(password && confirmPassword && password === confirmPassword){
         return true;
@@ -31,3 +8,24 @@ function verify_password_to_submit(data, name){
     }
 
 }
+
+$("[data-toggle=password]").on("click", function(){
+
+    let input = $($(this).attr("data-target"));
+    let img = $(this).prop("nodeName") !== "IMG" ? $(this).find("img") : $(this);
+
+    if(input.attr("type") === "text"){
+
+        input.attr("type", "password");
+        img.attr("title", "Mostrar Senha").attr("src", "/assets/media/img/icons/closed_eye.png");
+
+    }
+
+    else{
+
+        input.attr("type", "text");
+        img.attr("title", "Esconder Senha").attr("src", "/assets/media/img/icons/eye.png");
+
+    }
+
+});

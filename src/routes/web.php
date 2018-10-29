@@ -3,59 +3,71 @@
  * @author Matheus Parolo Miranda
  */
 
-use \TCC\Middleware\Auth;
-use \TCC\Middleware\ResearchCreator;
-use \TCC\Middleware\ResearchMember;
+use \TCC\Middleware\web\IsAuth;
+use \TCC\Middleware\web\IsResearchCreator;
+use \TCC\Middleware\web\IsResearchMember;
+
+$this->authController          = "\TCC\Controllers\AuthController:";
+$this->userController          = "\TCC\Controllers\UserController:";
+$this->researchController      = "\TCC\Controllers\ResearchController:";
+$this->formController          = "\TCC\Controllers\FormController:";
+$this->answerController        = "\TCC\Controllers\AnswerController:";
+$this->exceptionController     = "\TCC\Controllers\ExceptionController:";
+$this->privateFilesController  = "\TCC\Controllers\PrivateFilesController:";
+
 
 // Index
-$this->redirect('/', '/pesquisa')->add(new Auth());
+$this->redirect('/', '/pesquisas')->add(new IsAuth());
 
-// Auth
-$this->get("/usuario", "\TCC\Controllers\AuthController:index");
 
-$this->post("/entrar", "\TCC\Controllers\AuthController:postLogin");
-$this->post("/cadastrar", "\TCC\Controllers\AuthController:postRegister");
+// IsAuth
+$this->get("/usuario",    $this->authController . "index");
 
-$this->get("/sair", "\TCC\Controllers\AuthController:getLogout");
+$this->post("/entrar",    $this->authController . "postLogin");
+$this->post("/cadastrar", $this->authController . "postRegister");
+
+$this->get("/sair",       $this->authController . "getLogout");
+
 
 // User
 $this->group('/usuario', function (){
 
-    $this->get("/editar", "\TCC\Controllers\UserController:getUpdate");
-    $this->post("/editar", "\TCC\Controllers\UserController:postUpdate");
+    $this->get("/editar",            $this->userController . "getUpdate");
+    $this->get("/editar/{dataType}", $this->userController . "getUpdate");
 
-    $this->post("/editar_senha", "\TCC\Controllers\UserController:postUpdatePassword");
+    $this->post("/editar",           $this->userController . "postUpdate");
 
-    $this->get("/buscar/{name}", "\TCC\Controllers\UserController:getSearchUser");
+    $this->post("/editar_senha",     $this->userController . "postUpdatePassword");
 
-})->add(new Auth());
+    $this->get("/buscar/{name}",     $this->userController . "getSearchUser");
+
+})->add(new IsAuth());
 
 
 // Research
-$this->group('/pesquisa', function (){
+$this->group('/pesquisa', function(){
 
-    $this->get("", "\TCC\Controllers\ResearchController:index");
-    $this->get("/json", "\TCC\Controllers\ResearchController:indexJson");
+    $this->get("s",                  $this->researchController . "index");
+    $this->get("s/{dataType}",       $this->researchController . "index");
 
-
-
-    $this->get("/criar", "\TCC\Controllers\ResearchController:getCreate");
-    $this->post("/criar", "\TCC\Controllers\ResearchController:postCreate");
-
-    $this->get("/{id}", "\TCC\Controllers\ResearchController:getResearch")->add(new ResearchMember("research"));
-    $this->get("/{id}/json", "\TCC\Controllers\ResearchController:getResearchJson")->add(new ResearchMember("research"));
+    $this->get("/criar",             $this->researchController . "getCreate");
+    $this->get("/criar/{dataType}",  $this->researchController . "getCreate");
+    $this->post("/criar",            $this->researchController . "postCreate");
 
     $this->group("/", function(){
 
-        $this->get("{id}/editar", "\TCC\Controllers\ResearchController:getUpdate");
-        $this->get("{id}/editar/json", "\TCC\Controllers\ResearchController:getUpdateJson");
+        $this->get("{id}/editar",             $this->researchController . "getUpdate");
+        $this->get("{id}/editar/{dataType}",  $this->researchController . "getUpdate");
 
-        $this->post("editar", "\TCC\Controllers\ResearchController:postUpdate");
-        $this->post("deletar", "\TCC\Controllers\ResearchController:postDelete");
+        $this->post("editar",                 $this->researchController . "postUpdate");
+        $this->post("deletar",                $this->researchController . "postDelete");
 
-    })->add(new ResearchCreator());
+    })->add(new IsResearchCreator());
 
-})->add(new Auth());
+    $this->get("/{id}",             $this->researchController . "getResearch")->add(new IsResearchMember("research"));
+    $this->get("/{id}/{dataType}",   $this->researchController . "getResearch")->add(new IsResearchMember("research"));
+
+})->add(new IsAuth());
 
 
 // Form
@@ -63,36 +75,40 @@ $this->group('/formulario', function (){
 
     $this->group("/criar", function(){
 
-        $this->get("/{research-id}", "\TCC\Controllers\FormController:getCreate");
-        $this->post("", "\TCC\Controllers\FormController:postCreate");
+        $this->post("",             $this->formController . "postCreate");
+        $this->get("/{researchID}", $this->formController . "getCreate");
 
-    })->add(new ResearchMember("research", "research-id"));
+    })->add(new IsResearchMember("research", "researchID"));
 
 
     $this->group("/", function(){
 
-        $this->post("editar", "\TCC\Controllers\FormController:postUpdate");
-        $this->post("deletar", "\TCC\Controllers\FormController:postDelete");
-        $this->post("resposta/enviar", "\TCC\Controllers\AnswerController:postAddAnswer");
+        $this->post("editar",                 $this->formController . "postUpdate");
+        $this->post("deletar",                $this->formController . "postDelete");
+        $this->post("resposta/enviar",        $this->answerController . "postAddAnswer");
+        $this->post("resposta/editar_texto",  $this->answerController . "postUpdateText");
 
         $this->group("{id}", function(){
 
-            $this->get("/json", "\TCC\Controllers\FormController:getFormJSON");
+            $this->get("/editar",                             $this->formController . "getUpdate");
+            $this->get("/editar/{dataType}",                  $this->formController . "getUpdate");
 
-            $this->get("/editar", "\TCC\Controllers\FormController:getUpdate");
-            $this->get("/resposta/enviar", "\TCC\Controllers\AnswerController:getAddAnswer");
-            $this->get("/resposta/{answerIndex}", "\TCC\Controllers\AnswerController:getAnswerByIndex");
+            $this->get("/resposta/enviar",                    $this->answerController . "getAddAnswer");
+            $this->get("/resposta/enviar/{dataType}",         $this->answerController . "getAddAnswer");
 
-            $this->get("/resultados", "\TCC\Controllers\AnswerController:getResults");
-            $this->get("/resultados/json", "\TCC\Controllers\AnswerController:getResultsJSON");
+            $this->get("/resposta/{answerIndex}/{dataType}",  $this->answerController . "getAnswerByIndex");
+
+            $this->get("/resultados",                         $this->answerController . "getResults");
+            $this->get("/resultados/{dataType}",              $this->answerController . "getResults");
 
         });
 
 
-    })->add(new ResearchMember());
+    })->add(new IsResearchMember());
 
-})->add(new Auth());
+})->add(new IsAuth());
 
+$this->get("/private/assets/audio/{formID}/{intervieweeID}/{questionID}", $this->privateFilesController . "answerAudio")->add(new IsResearchMember("form", "formID"));
 
 // Exception
-$this->get("/erro", "\TCC\Controllers\ExceptionController:index");
+$this->get("/erro", $this->exceptionController . "index");

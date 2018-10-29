@@ -38,13 +38,13 @@ block body
                                 .input-group-prepend
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/email.png')
-                                input#login-email.form-control(type='email', name='email', placeholder='Email', data-required='1')
+                                input#login-email.form-control(type='email', name='email', placeholder='Email', required)
                             .input-group.mb-3
                                 .input-group-prepend
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/password.png')
-                                input#login-password.form-control(type='password', name='password', placeholder='Senha', data-required='1')
-                                .input-group-append(title='Mostrar Senha')
+                                input#login-password.form-control(type='password', name='password', placeholder='Senha', required)
+                                .input-group-append(title='Mostrar Senha', data-toggle="password", data-target="#login-password")
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/closed_eye.png')
                             .form-group.my-3
@@ -59,27 +59,31 @@ block body
                                 .input-group-prepend
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/identity.png')
-                                input#register-name.form-control(type='text', name='name', placeholder='Nome', data-required='1')
+                                input#register-name.form-control(type='text', name='name', placeholder='Nome', required)
+
                             .input-group.mb-3
                                 .input-group-prepend
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/email.png')
-                                input#register-email.form-control(type='email', name='email', placeholder='Email', data-required='1')
+                                input#register-email.form-control(type='email', name='email', placeholder='Email', required)
+
                             .input-group.mb-3
                                 .input-group-prepend
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/password.png')
-                                input#register-password.form-control(type='password', name='password', placeholder='Senha', data-required='1')
-                                .input-group-append(title='Mostrar Senha')
+                                input#register-password.form-control(type='password', name='registerPassword', placeholder='Senha', required)
+                                .input-group-append(title='Mostrar Senha', data-toggle="password", data-target="#register-password")
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/closed_eye.png')
+
                             .input-group.mb-3
                                 .input-group-prepend
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/password.png')
-                                input#register-confirm-password.form-control(type='password', name='confirm-password', placeholder='Confirmar Senha', data-required='1')
-                                .input-group-append(title='Mostrar Senha')
+                                input#register-confirm-password.form-control(type='password', name='confirmPassword', placeholder='Confirmar Senha', required)
+                                .input-group-append(title='Mostrar Senha', data-toggle="password", data-target="#register-new-password")
                                     span.input-group-text
                                         img(src='/assets/media/img/icons/closed_eye.png')
+
                             .form-group.my-3
                                 input.btn.btn-primary.btn-block(type='submit', value='Cadastrar')

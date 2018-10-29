@@ -53,6 +53,17 @@ class UserDAO{
 
     }
 
+    public function update_tokens(int $userID, string $token1, string $token2):void
+    {
+
+        $this->conn->query("update user set token_1 = :token1, token_2 = :token2 where id = :userID",[
+            "userID" => $userID,
+            "token1" => $token1,
+            "token2" => $token2
+        ]);
+
+    }
+
 
     public function find_by_id(int $id, array $columns = ["*"]):GenericEntity
     {
@@ -60,6 +71,19 @@ class UserDAO{
         $data = $this->conn->select("select " . join(",", $columns) . " from myForm.user where id = :id",
             [
                 "id" => $id
+            ]);
+
+        return new GenericEntity(!empty($data) ? $data[0] : []);
+
+    }
+
+    public function find_by_tokens(string $token1, string $token2, array $columns = ["*"]):GenericEntity
+    {
+
+        $data = $this->conn->select("select " . join(",", $columns) . " from myForm.user where token_1 = :token1 and token_2 = :token2",
+            [
+                "token1" => $token1,
+                "token2" => $token2
             ]);
 
         return new GenericEntity(!empty($data) ? $data[0] : []);

@@ -1,4 +1,4 @@
-function show_response(code, redirect = true){
+function show_response(code, redirect){
 
     switch (code) {
         case "000":
@@ -6,6 +6,9 @@ function show_response(code, redirect = true){
             break;
         case "300":
             window.location.replace("/usuario");
+            break;
+        case "400":
+            window.location.replace("/pesquisas");
             break;
         default:
             insert_alert(responseCodes[code][0], responseCodes[code][1], "danger");
@@ -26,15 +29,12 @@ function verifyRequireds(form){
     for(var i = 0; i < inputs.length; i++)
     {
 
-        let input = $(inputs[i]);
-        if(input.val() === "")
+        let input = inputs[i];
+        a = input;
+        if($(input).val() === "")
         {
 
-            input.attr("title", "Campo obrigatório!").attr("data-placement", "bottom").tooltip("enable").tooltip('show');
-
-            window.setTimeout(function(){
-                input.removeAttr("title").tooltip("hide").tooltip("disable");
-            }, 3000);
+            input.reportValidity();
 
             $('html, body').animate({scrollTop: $(input).offset().top - 80}, 250);
 
@@ -55,83 +55,38 @@ function search_parent_attr(element, attr){
 }
 
 // Submits
-function submit_form(form, url, data = [], redirect = true, callbackData = null, callbackForm = null){
-
-    // Init
-    if(callbackData === null)
-        callbackData = function(){return true};
-
-    if(callbackForm === null)
-        callbackForm = function(){};
-
-    // Verify inputs requireds
-    if(verifyRequireds(form))
-    {
-
-        // Init login alert
-        insert_loading();
-
-        // Disable button submit
-        let submit = $(this).find("input[type='submit']");
-        change_disabled(submit, true);
-
-        // Make form Data
-        let formData = $(form).serializeArray();
-        formData = formData.concat(data);
-
-        if(callbackData(formData)){
-
-            // Submit
-            $.post(url, formData, function(responseData){
-
-                // Response operations
-                show_response(responseData["code"], redirect);
-                change_disabled(submit, false);
-
-                // Callback
-                callbackForm(responseData);
-
-            }, "json");
-
-        }else{
-
-            // Enable Button submit
-            remove_loading();
-            change_disabled(submit, false);
-
-        }
-
-    }
-
-}
-function getData(url, formData, callback){
-
-    $.get(url, formData, function(responseData) {
-
-        if(responseData["code"] !== undefined){
-            show_response(responseData["code"]);
-        }
-        else{
-            callback(responseData);
-        }
-
-    }, "json");
-
-}
 function send_remove(element, url, attr = "data-id"){
 
     if(confirm("Tem certeza que deseja deletar? Essa operação não poderá ser desfeita.")){
 
         let id = search_parent_attr(element, attr);
+
+        insert_loading();
         $.post(url, {
             "id" : id
         }, function(data){
 
-            show_response(data["code"])
+            remove_loading();
+            show_response(data["code"], true);
 
         }, "json");
 
     }
+
+}
+function getJSON(url, callback){
+
+    insert_loading();
+    $.get(url, function(responseData){
+
+        remove_loading();
+        if(responseData["code"] !== undefined)
+            show_response(responseData["code"]);
+
+        else
+            callback(responseData);
+
+    }, "json");
 
 }
 
@@ -182,6 +137,76 @@ function remove_loading(){
     $("#alert").find(".alert-loading").remove();
 }
 
+// Prototypes
+$.prototype.serializeJSON = function(){
+
+    let serialized = this.serializeArray();
+    let toReturn = {};
+
+    serialized.forEach(function(field){
+
+        toReturn[field["name"]] = field["value"];
+
+    });
+
+    return toReturn;
+
+};
+$.prototype.submitter = function(url, inputOptions = {}){
+
+    if(this.prop("nodeName") === "FORM"){
+
+        let optionsDefault = {
+
+            redirect : true,
+            useSerialize : true,
+            data : [],
+            callbackData : function(){return true},
+            callbackForm : function(){},
+
+        };
+        let options = {};
+        $.extend(options, optionsDefault, inputOptions);
+
+        // Init login alert
+        insert_loading();
+
+        // Disable button submit
+        let submit = this.find("input[type='submit']");
+        change_disabled(submit, true);
+
+        // Make form Data
+        let formSerialized = options["useSerialize"] ? this.serializeJSON() : {};
+        let formData = {};
+        $.extend(formData, formSerialized, options["data"]);
+
+        if(options["callbackData"](formData)){
+
+            // Submit
+            $.post(url, formData, function(responseData){
+
+                // Response operations
+                show_response(responseData["code"], options["redirect"]);
+                change_disabled(submit, false);
+
+                // Callback
+                options["callbackForm"](responseData);
+
+            }, "json");
+
+        }else{
+
+            // Enable Button submit
+            remove_loading();
+            change_disabled(submit, false);
+
+        }
+
+    }
+
+};
+
+// Inits
 responseCodes = {
     "200" : ["Ops! Parece que estamos passando por problemas tecnicos.", "Tente novamente mais tarde."]
 };

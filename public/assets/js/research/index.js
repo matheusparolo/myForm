@@ -1,3 +1,4 @@
+// Researches Actions
 function insert_researches(data){
 
     let userID = data["userID"];
@@ -10,9 +11,6 @@ function insert_researches(data){
         let research = researchData["research"];
         let user = researchData["user"];
 
-        a = userID;
-        b = research["creatorId"];
-
         tableResearches
             .append($("<tr>")
 
@@ -20,10 +18,8 @@ function insert_researches(data){
 
                 .append($("<td>")
 
-                    .addClass("action-t")
+                    .addClass("action")
                     .attr("title", "Visualizar")
-                    .attr("data-placement", "bottom")
-                    .tooltip("enable")
                     .text(research["name"])
                     .on("click", function(){
                         window.location.replace("/pesquisa/" + research["id"])
@@ -32,11 +28,9 @@ function insert_researches(data){
                 )
                 .append($("<td>")
 
-                    .addClass("action-t")
+                    .addClass("action")
                     .attr("title", "Visualizar")
-                    .attr("data-placement", "bottom")
-                    .tooltip("enable")
-                    .text(userID === research["creatorId"] ? "você" : user["name"])
+                    .text(userID == research["creatorId"] ? "você" : user["name"])
                     .on("click", function(){
                         window.location.replace("/pesquisa/" + research["id"])
                     })
@@ -44,10 +38,8 @@ function insert_researches(data){
                 )
                 .append($("<td>")
 
-                    .addClass("action-t")
+                    .addClass("action")
                     .attr("title", "Visualizar")
-                    .attr("data-placement", "bottom")
-                    .tooltip("enable")
                     .text(research["applicationArea"])
                     .on("click", function(){
                         window.location.replace("/pesquisa/" + research["id"])
@@ -56,7 +48,7 @@ function insert_researches(data){
                 )
                 .append($("<td>")
 
-                    .addClass("action-i")
+                    .addClass("action")
                     .append($("<a>")
 
                         .css({"display" : (userID == research["creatorId"] ? "block" : "none")})
@@ -64,7 +56,6 @@ function insert_researches(data){
                         .append($("<img>")
                             .attr("src", "/assets/media/img/icons/edit.png")
                             .attr("title", "Editar")
-                            .tooltip({placement: "bottom"})
                         )
 
                     )
@@ -72,14 +63,13 @@ function insert_researches(data){
                 )
                 .append($("<td>")
 
-                    .addClass("action-i")
+                    .addClass("action")
                     .append($("<span>")
 
                         .css({"display" : (userID == research["creatorId"] ? "block" : "none")})
                         .append($("<img>")
                             .attr("src", "/assets/media/img/icons/delete.png")
                             .attr("title", "Remover")
-                            .tooltip({placement: "bottom"})
                         )
                         .on("click", remove_research)
 
@@ -98,11 +88,21 @@ function remove_research(){
 
 }
 
-function main(){
+// Main
+function init_vars(){
 
     responseCodes["000"] = "";
 
-    getData("/pesquisa/json", null, insert_researches);
+}
+function get_data(){
+
+    getJSON("/pesquisas/json", insert_researches);
+
+}
+function main(){
+
+    init_vars();
+    get_data();
 
 }
 

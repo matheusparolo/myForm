@@ -1,74 +1,16 @@
+// Update
 function update(){
 
-    submit_form("#form-update", "/formulario/editar", [{"name" : "questions", "value" : JSON.stringify(questions)}]);
-
-}
-
-function search_index(element, attr){
-
-    while($(element).attr(attr) === undefined) element = element.parentNode;
-    return $(element).attr(attr);
-
-}
-
-
-function change_statement(){
-
-    let index = search_index(this, "data-index");
-    questions[index]["statement"] = $(this).prop("value");
-
-}
-function change_option_info(){
-
-    let index = search_index(this, "data-index");
-    let optionIndex = search_index(this, "data-option-index");
-    questions[index]["options"][optionIndex]["info"] = $(this).val();
-
-}
-
-
-function change_required(){
-
-    let index = search_index(this, "data-index");
-    questions[index]["required"] = $(this).prop("checked");
-
-}
-function change_describe_allowed(){
-
-    let index = search_index(this, "data-index");
-    let optionIndex = search_index(this, "data-option-index");
-    questions[index]["options"][optionIndex]["describe_allowed"] = $(this).prop("checked");
-
-}
-function change_index(){
-
-    let index = search_index(this, "data-index");
-    let newIndex = $(this).val() - 1;
-
-    if (newIndex === "") $(this).val(index + 1);
-    else if(index !== newIndex) {
-
-        let question, type, options, temp;
-
-        questions.splice(newIndex, 0, questions.splice(index, 1)[0]);
-        temp = questions;
-        questions = [];
-
-        $("#questions").html("");
-        for (var i = 0; i < temp.length; i++) {
-
-            question = temp[i];
-            type = question["type"];
-            options = type !== "text" ? question["options"] : null;
-
-            push_question(type, question["statement"], question["required"], options);
-
+    $("#form-update").submitter("/formulario/editar", {
+        data : {
+            "questions" : questions
         }
-
-    }
+    });
 
 }
 
+
+// Push
 function push_question(id, type, statement = "", required = false, options = []){
 
     let typeText, index;
@@ -107,6 +49,8 @@ function push_question(id, type, statement = "", required = false, options = [])
 
 }
 
+
+// Insert
 function insert_question(type, index, statement, required, typeText){
 
     let hide_options = type !== "text";
@@ -214,15 +158,74 @@ function insert_option(question, questionIndex, optionIndex, info, describe_allo
 
 }
 
-function main(){
+
+// Changes
+function change_statement(){
+
+    let index = search_parent_attr(this, "data-index");
+    questions[index]["statement"] = $(this).prop("value");
+
+}
+function change_option_info(){
+
+    let index = search_parent_attr(this, "data-index");
+    let optionIndex = search_parent_attr(this, "data-option-index");
+    questions[index]["options"][optionIndex]["info"] = $(this).val();
+
+}
+function change_required(){
+
+    let index = search_parent_attr(this, "data-index");
+    questions[index]["required"] = $(this).prop("checked");
+
+}
+function change_describe_allowed(){
+
+    let index = search_parent_attr(this, "data-index");
+    let optionIndex = search_parent_attr(this, "data-option-index");
+    questions[index]["options"][optionIndex]["describe_allowed"] = $(this).prop("checked");
+
+}
+function change_index(){
+
+    let index = search_parent_attr(this, "data-index");
+    let newIndex = $(this).val() - 1;
+
+    if(newIndex === "") $(this).val(index + 1);
+    else if(index !== newIndex) {
+
+        let question, type, options, temp;
+
+        questions.splice(newIndex, 0, questions.splice(index, 1)[0]);
+        temp = questions;
+        questions = [];
+
+        $("#questions").html("");
+        for (var i = 0; i < temp.length; i++) {
+
+            question = temp[i];
+            type = question["type"];
+            options = type !== "text" ? question["options"] : null;
+
+            push_question(question["id"], type, question["statement"], question["required"], options);
+
+        }
+
+    }
+
+}
+
+
+// main
+function init_vars(){
 
     responseCodes["000"] = "/pesquisa/" + $("#research-id").val();
-
     questions = [];
 
-    $("#form-update").on("submit", update);
+}
+function get_data(){
 
-    getData("/formulario/" + $("#form-id").val() + "/json", function (data) {
+    getJSON("/formulario/" + $("#form-id").val() + "/editar/json", function(data) {
 
         $("#name").val(data["name"]);
         let questions = data["questions"];
@@ -234,6 +237,20 @@ function main(){
         });
 
     });
+
+}
+function binds(){
+
+    $("#form-update").on("submit", update);
+
+}
+
+
+function main(){
+
+    init_vars();
+    get_data();
+    binds();
 
 }
 

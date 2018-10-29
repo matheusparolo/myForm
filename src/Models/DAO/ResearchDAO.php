@@ -19,15 +19,16 @@ class ResearchDAO{
     }
 
 
-    public function create(int $userID, string $name, string $overview, string $applicationArea, array $members):void
+    public function create(int $userID, string $name, string $overview, string $terms, string $applicationArea, array $members):void
     {
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("insert into myForm.research(creator_id, name, overview, application_area) values(:userID, :name, :overview, :applicationArea)", [
+        $this->conn->query("insert into myForm.research(creator_id, name, overview, terms, application_area) values(:userID, :name, :overview, :terms, :applicationArea)", [
             "userID" => $userID,
             "name" => $name,
             "overview" => $overview,
+            "terms" => $terms,
             "applicationArea" => $applicationArea,
         ]);
 
@@ -39,15 +40,16 @@ class ResearchDAO{
 
     }
 
-    public function update(int $researchID, string $name, string $overview, string $applicationArea, array $users):void
+    public function update(int $researchID, string $name, string $overview, string $terms, string $applicationArea, array $users):void
     {
 
         $this->conn->begin_transaction();
 
-        $this->conn->query("update myForm.research set name = :name, overview = :overview, application_area = :applicationArea where id = :researchID",
+        $this->conn->query("update myForm.research set name = :name, overview = :overview, terms = :terms, application_area = :applicationArea where id = :researchID",
             [
                 "name" => $name,
                 "overview" => $overview,
+                "terms" => $terms,
                 "applicationArea" => $applicationArea,
                 "researchID" => $researchID
             ]);
@@ -169,11 +171,11 @@ class ResearchDAO{
     {
 
         $areas = $this->conn->select("select application_area from myForm.research");
+        $toReturn = [];
+        foreach($areas as $area)
+            array_push($toReturn, $area["application_area"]);
 
-        foreach ($areas as &$area)
-            $area = new GenericEntity($area);
-
-        return $areas;
+        return $toReturn;
 
     }
 

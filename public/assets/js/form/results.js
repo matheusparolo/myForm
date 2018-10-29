@@ -1,10 +1,33 @@
+// Submit
+function submit_textAnswers(){
+
+    let formID = $("#card-results").attr("data-id");
+    let intervieweeID = $("#form-answers").attr("data-intervieweeID");
+
+    $("#form-answers").submitter("/formulario/resposta/editar_texto", {
+
+        redirect : false,
+        useSerialize: false,
+        data : {
+            "id" : formID,
+            "intervieweeID" : intervieweeID,
+            "textAnswers" : textAnswers
+        }
+
+    })
+
+}
+
+// Search
 function next_anwer(){
 
     $("#input-index-answer").val(parseInt(last_answer) + 1);
     search();
 
 }
-
+function isEmpty(obj){
+    return Object.keys(obj).length === 0;
+}
 function search(){
 
     clear_questions();
@@ -14,7 +37,7 @@ function search(){
 
     if(answerIndex !== ""){
 
-        getData("/formulario/" + formID +"/resposta/" + answerIndex, [], function(data) {
+        getJSON("/formulario/" + formID +"/resposta/" + answerIndex + "/json", function(data) {
 
             last_answer = answerIndex;
             $("#answer-index").text(" " + answerIndex);
@@ -22,15 +45,28 @@ function search(){
 
             let questions = $(".question");
 
-            if (data.length !== 0) {
+            if (!isEmpty(data)){
 
-                for (var i = 0; i < data.length; i++) {
+                $("#form-answers").attr("data-intervieweeID", data["intervieweeID"]);
 
-                    let answer = data[i];
+                textAnswers = {};
+
+                let answers = data["answers"];
+                for (var i = 0; i < answers.length; i++) {
+
+                    let answer = answers[i];
                     let question = $(questions[i]);
+
                     if (answer != []) {
 
-                        if (question.attr("data-type") === "text") question.find("textarea").val(answer["answer"]);
+                        if (question.attr("data-type") === "text")
+                        {
+
+                            question.find("textarea").val(answer["answer"]);
+                            questions[i].querySelector("audio").load();
+                            question.find("source").attr("src", answer["audio_link"]);
+
+                        }
                         else {
 
                             let options = question.find(".option");
@@ -38,11 +74,11 @@ function search(){
 
                                 let option = $(options[j]);
 
-                                for (var k = 0; k < answer["answer"].length; k++) {
+                                for (var k = 0; k < answer.length; k++) {
 
-                                    let answerK = answer["answer"][k];
+                                    let answerK = answer[k];
 
-                                    if (parseInt(option.attr("data-id")) === parseInt(answerK["id"])) {
+                                    if(parseInt(option.attr("data-id")) === parseInt(answerK["boxOptionID"])) {
 
                                         option.find("input").prop("checked", true);
                                         if (option.attr("data-describe") === "1") option.find("input")[1].value = answerK["describe_text"];
@@ -61,7 +97,8 @@ function search(){
                 }
 
             } else {
-                insert_alert("Indice não encontrado!", "O indice não corresponde a nenhuma resposta cadastrada..", "danger");
+                insert_alert("Indice não encontrado!", "O indice pesquisado não corresponde a nenhuma resposta cadastrada.", "warning");
+                textAnswers = {};
                 clear_questions();
             }
 
@@ -71,7 +108,6 @@ function search(){
 
     }
 }
-
 function clear_questions(){
 
     let questions = $(".question");
@@ -86,7 +122,6 @@ function clear_questions(){
             for(var j = 0; j < options.length; j++)
             {
 
-
                 let option = $(options[j]);
 
                 option.find("input").prop("checked", false);
@@ -100,6 +135,7 @@ function clear_questions(){
 
 }
 
+// Insert
 function insert_question(question){
 
     let id = question["id"];
@@ -135,18 +171,28 @@ function insert_question(question){
         );
 
     question = $($("#questions").children()[index]);
+
     if(type === "text")
     {
 
         question.find(".options")
             .append($("<div>")
+
                 .addClass("form-group")
                 .addClass("mb-3")
                 .append($("<textarea>")
                     .addClass("form-control")
                     .attr("rows", 3)
-                    .prop("disabled", true)
+                    .on("blur", change_textAnswer)
                 )
+                .append($("<audio controls>")
+                    .addClass("mt-2")
+                    .addClass("audioPlayer")
+                    .append($("<source>")
+                        .attr("type", "audio/ogg")
+                    )
+                )
+
             )
 
     }else{
@@ -200,11 +246,38 @@ function insert_question(question){
 }
 
 
+// Change
+function change_view(){
 
+    if($(this).attr("id") === "show-answers")
+    {
+
+        $("#form-answers").show();
+        $(".card-footer").show();
+        $("#results-card").hide();
+
+    }else{
+
+        $("#form-answers").hide();
+        $(".card-footer").hide();
+        $("#results-card").show();
+
+    }
+
+}
+function change_textAnswer(){
+
+    let questionID = search_parent_attr(this, "data-id");
+
+    textAnswers[questionID] = $(this).val();
+
+}
+
+
+// Chart
 function randomColor(){
     return ("#" + Math.random().toString(16).slice(2, 8));
 }
-
 function new_chart(canvas, questionIndex, statement, answers, type){
 
     let i;
@@ -226,7 +299,7 @@ function new_chart(canvas, questionIndex, statement, answers, type){
 
     let config = {
 
-        type: (type === "radio") ? "doughnut" : "bar",
+        type: (type === "radio") ? "doughnut" : "horizontalBar",
         data: {
             datasets: [{
                 data: data,
@@ -267,29 +340,30 @@ function new_chart(canvas, questionIndex, statement, answers, type){
 
 }
 
-function change_view(){
 
-    if($(this).attr("id") === "show-answers")
-    {
+// main
+function init_vars(){
 
-        $("#answers").show();
-        $(".card-footer").show();
-        $("#results-card").hide();
-
-    }else{
-
-        $("#answers").hide();
-        $(".card-footer").hide();
-        $("#results-card").show();
-
-    }
+    responseCodes["000"] = ["Alteração de textos realizada com sucesso!", "A transcrição do audio foi salva e ficará disponivel para todos os visualizadores."];
+    textAnswers = {};
 
 }
+function get_data(){
 
-function main(){
+    getJSON("/formulario/" + $("#card-results").attr("data-id") + "/resultados/json", function(data){
 
-    getData("/formulario/" + $("#card-results").attr("data-id") + "/resultados/json", [], function(data){
 
+        let questions = data["questions"];
+
+        questions.forEach(function(question){
+            insert_question(question);
+        });
+
+        last_answer = 0;
+        $("#next-answer").on("click", next_anwer);
+        next_anwer();
+
+        data = data["results"];
         $("#c-interviewee").text(" " + data["c_interviewee"]);
         cInterviewee = data["c_interviewee"];
 
@@ -335,24 +409,26 @@ function main(){
         }
 
     });
-    getData("/formulario/" + $("#card-results").attr("data-id") + "/json", [], function(data){
-
-        let questions = data["questions"];
-
-        questions.forEach(function(question){
-            insert_question(question);
-        });
-
-        last_answer = 0;
-        $("#next-answer").on("click", next_anwer);
-        next_anwer();
-
-    });
 
     $("#show-answers, #show-results").on("click", change_view);
 
     $("#search-answer").on("click", search);
     $("#next-answer").on("click", next_anwer);
+
+}
+function binds(){
+
+
+    $("#form-answers").on("submit", submit_textAnswers);
+
+
+}
+
+function main(){
+
+    init_vars();
+    get_data();
+    binds();
 
 }
 

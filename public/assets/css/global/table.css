@@ -6,16 +6,8 @@ tr{
     transition-duration: .15s;
 }
 
-.action-i, tr td{
+.action{
     cursor: pointer;
-}
-
-.action-i > img, .action-i > a{
-    transition-duration: .15s;
-}
-
-.action-i:hover > img, .action-i:hover > a{
-    opacity: .7;
 }
 
 .table td{

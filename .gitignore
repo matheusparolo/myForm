@@ -1,3 +1,5 @@
 vendor/*
 .env
 src/views/cache/*
+log
+private/assets/audio/*

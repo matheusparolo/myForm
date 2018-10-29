@@ -26,3 +26,10 @@
 {
     display: inline-block;
 }
+
+#questions{
+
+    float: left;
+    width: 100%;
+
+}

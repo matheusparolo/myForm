@@ -25,7 +25,7 @@ class FormModel{
     {
 
         $this->formDAO->create($researchID, $name, $questions);
-        App::action_response("000");
+        App::code_json_response("000");
 
     }
 
@@ -33,24 +33,51 @@ class FormModel{
     {
 
         $this->formDAO->update($formID, $name, $questions);
-        App::action_response("000");
+        App::code_json_response("000");
 
     }
 
-    public function delete(int $id):void
-    {
+    public function delete(int $id):void{
 
         $this->formDAO->delete($id);
-        App::action_response("000");
+        App::rmdir($_SERVER["DOCUMENT_ROOT"] . "/../private/assets/audio/form_" . $id, true);
+        App::code_json_response("000");
 
     }
 
 
-    public function add_answer(int $id, array $answers):void
+    public function add_answer(int $id, string $cpf, array $answers, array $files):void
     {
 
-        $this->formDAO->add_answer($id, $answers);
-        App::action_response("000");
+        $intervieweeID = $this->formDAO->add_answer($id, $cpf, $answers);
+
+        $path = $_SERVER["DOCUMENT_ROOT"] . "/../private/assets/audio/form_" . $id . "/interviewee_" . $intervieweeID . "/";
+        if(!empty($files))
+            mkdir($path, 0757, true);
+
+        $error = false;
+        foreach($files as $file)
+        {
+
+            if(!$file["error"] && $file["type"] === "audio/ogg" && $file["size"] > 0 && move_uploaded_file($file["tmp_name"],  $path . $file["name"] . ".ogg"))
+                $error = false;
+            else
+                $error = true;
+
+        }
+        if($error)
+            foreach($files as $file)
+                unlink($path . $file["name"] . ".ogg");
+
+        App::code_json_response("000");
+
+    }
+
+    public function update_text(int $id, int $intervieweeID, array $textAnswers):void
+    {
+
+        $this->formDAO->update_text($id, $intervieweeID, $textAnswers);
+        App::code_json_response("000");
 
     }
 

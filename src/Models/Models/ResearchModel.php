@@ -7,7 +7,6 @@ namespace TCC\Models\Models;
 
 use TCC\Core\App;
 use TCC\Models\DAO\ResearchDAO;
-use TCC\Models\Entities\GenericEntity;
 
 class ResearchModel{
 
@@ -21,31 +20,36 @@ class ResearchModel{
     }
 
 
-    public function create(int $userID, string $name, string $overview, string $applicationArea, array $members):void
+    public function create(int $userID, string $name, string $overview, string $terms, string $applicationArea, array $members):void
     {
 
         array_push($members, $userID);
 
-        $this->researchDAO->create($userID, $name, $overview, $applicationArea, $members);
-        App::action_response("000");
+        $this->researchDAO->create($userID, $name, $overview, $terms, $applicationArea, $members);
+        App::code_json_response("000");
 
     }
 
-    public function update(int $researchID, int $userID, string $name, string $overview, string $applicationArea, array $members):void
+    public function update(int $researchID, int $userID, string $name, string $overview, string $terms, string $applicationArea, array $members):void
     {
 
         array_push($members, $userID);
 
-        $this->researchDAO->update($researchID, $name, $overview, $applicationArea, $members);
-        App::action_response("000");
+        $this->researchDAO->update($researchID, $name, $overview, $terms, $applicationArea, $members);
+        App::code_json_response("000");
 
     }
 
     public function delete(int $id):void
     {
 
+        $forms = FormModel::find_all_by_research_id($id);
         $this->researchDAO->delete($id);
-        App::action_response("000");
+
+        foreach($forms as $form)
+            App::rmdir($_SERVER["DOCUMENT_ROOT"] . "/../private/assets/audio/form_" . $form->getId(), true);
+
+        App::code_json_response("000");
 
     }
 
