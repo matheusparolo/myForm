@@ -25,18 +25,33 @@
     cursor: pointer;
 }
 
-#results .col-card{
+.type-checkbox, .type-radio{
     width: 100%;
     float: left;
 }
+
 @media (min-width: 768px)
 {
-    #results .col-card {
+
+    .type-radio
+    {
         width: 50%;
     }
+
+}
+
+@media (min-width: 992px)
+{
+
+    .type-radio
+    {
+        width: 33.3%;
+    }
+
 }
 
 .audioPlayer
 {
     width: 100%;
 }
+

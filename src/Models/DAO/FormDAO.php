@@ -130,15 +130,14 @@ class FormDAO{
 
         $return = [
             "c_interviewee" => $cInterviewee,
-            "answers" => [],
-            "questions" => []
+            "answers" => []
         ];
 
         if($cInterviewee > 0)
         {
 
             $return["answers"] = $this->conn->select(
-                "select question_id, info, count(boxOption_id) as votes
+                "select boxOption_id, question_id, info, count(boxOption_id) as votes
                     from interviewee 
                     inner join myForm.boxAnswer on interviewee.id = boxAnswer.interviewee_id
                     inner join boxOption on boxOption.id = boxOption_id
@@ -147,13 +146,6 @@ class FormDAO{
             [
                 "id" => $id
             ]);
-
-            $return["questions"] = $this->conn->select(
-                "select id, `index`, type, statement from question where form_id = :formID and type != 'text'",
-                [
-                    "formID" => $id
-                ]
-            );
 
         }
 
@@ -219,8 +211,9 @@ class FormDAO{
 
                 if($option["question_id"] == $question["id"]){
 
+                    if(empty($question["options"]))
+                        $question["options"] = [];
 
-                    if(!$question["options"]) $question["options"] = [];
                     array_push($question["options"],($returnWithoutEntity) ? $option : new GenericEntity($option) );
 
                 }

@@ -326,13 +326,28 @@ function new_chart(canvas, questionIndex, statement, answers, type){
                         return percentage + "% - " + currentValue + " votos";
                     }
                 }
-            }
-        }
+            },
+            barPercentage : .3,
+            categoryPercentage : .3,
+            gridLines : {
+                offsetGridLines : false
+            },
+
+    }
     };
 
     if(type === "checkbox") {
 
-        config["options"]["scales"] = {yAxes: [{ticks: {beginAtZero:true}}]}
+        config["options"]["scales"] =
+            {
+
+                xAxes: [{
+
+                    ticks: {beginAtZero:true},
+
+                }]
+
+            };
 
     }
 
@@ -352,7 +367,6 @@ function get_data(){
 
     getJSON("/formulario/" + $("#card-results").attr("data-id") + "/resultados/json", function(data){
 
-
         let questions = data["questions"];
 
         questions.forEach(function(question){
@@ -370,39 +384,81 @@ function get_data(){
         if(cInterviewee > 0)
         {
 
-            let questions = data["questions"];
+            let c = 0;
             questions.forEach(function(question){
 
-                let answers = [];
-                let allAnswers = data["answers"];
+                if(question.type !== "text") {
 
-                allAnswers.forEach(function(answer){
+                    let answers = [];
+                    let allAnswers = data["answers"];
+                    let boxOptionIDAnswer = [];
 
-                    if(answer["question_id"] === question["id"])
-                        answers.push(answer);
+                    allAnswers.forEach(function (answer) {
 
-                });
+                        if (answer["question_id"] === question["id"]) {
+                            answers.push(answer);
+                            boxOptionIDAnswer.push(answer["boxOption_id"])
+                        }
 
-                $("#results")
-                    .append($("<div>")
-                        .addClass("col-card")
+                    });
+
+                    question["options"].forEach(function (option) {
+
+                        if (boxOptionIDAnswer.indexOf(option["id"]) === -1) {
+
+                            answers.push({
+                                id: option["id"],
+                                info: option["info"],
+                                question_id: option["question_id"],
+                                votes: 0
+                            });
+
+                        }
+
+                    });
+
+                    if (c >= 3) {
+                        c = 0;
+                    }
+
+                    if (c === 0) {
+
+                        $("#results")
+                            .append($("<div>")
+                                .addClass("row")
+                                .append($("<div>")
+                                    .addClass("col-12")
+                                )
+                            );
+
+                    }
+
+                    let toInsert = $("#results .row:last-child .col-12");
+
+                    toInsert
                         .append($("<div>")
-                            .addClass("card")
+                            .addClass("col-card")
+                            .addClass("type-" + question.type)
                             .append($("<div>")
-                                .addClass("card-header")
-                                .text((parseInt(question.index) + 1) + ". " + question.statement)
-                            )
-                            .append($("<div>")
-                                .addClass("card-body")
-                                .append($("<canvas>")
-                                    .attr("id", "question-" + question["id"])
+                                .addClass("card")
+                                .append($("<div>")
+                                    .addClass("card-header")
+                                    .text((parseInt(question.index) + 1) + ". " + question.statement)
+                                )
+                                .append($("<div>")
+                                    .addClass("card-body")
+                                    .append($("<canvas>")
+                                        .attr("id", "question-" + question["id"])
+                                    )
                                 )
                             )
-                        )
-                    );
+                        );
 
-                new_chart("#question-" + question["id"], question.index, question.statement, answers, question.type);
+                    new_chart("#question-" + question["id"], question.index, question.statement, answers, question.type);
 
+                    c += (question.type === "radio") ? 1 : 3;
+
+                }
 
             });
 
